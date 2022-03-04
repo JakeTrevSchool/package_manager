@@ -35,3 +35,6 @@ class comment(models.Model):
     author = models.ForeignKey(UserProfile)
     package = models.ForeignKey(package)
     text = models.TextField()
+
+    posted_at = models.DateField()
+    likes = models.IntegerField()
