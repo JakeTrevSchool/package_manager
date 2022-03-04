@@ -7,6 +7,13 @@
     </head>
     <body>
         <div>
+            <header>
+                <img alt="logo"/>
+                <a href="{% url 'manager:index' %}"><h1>home</h1></a>
+                <a href="{% url 'manager:explore' %}">explore pagages</a>
+                <a href="{% url 'manager:login' %}" >login/Register</a>
+                <!-- or logout; work out how to do that -->
+            </header>
             {% block body_block %}
             {% endblock %}
         </div>

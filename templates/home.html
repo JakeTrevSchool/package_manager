@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+{% extends 'base.html' %}
+
+{% block body_block %}
+<div id="statistics">
+    <h2>{{ developers }} developers</h2>
+    <h2>{{ packages }} packages</h2>
+</div>
+<div id="introduction">
+    <h2>Why Package Manager?</h2>
+
+    <p>Package manager is a full-featured package management solution. Being language agnostic, you can make it work for you. PM is language agnostic, but its best suited to scripting languages that don't have complex build tools - for example, Lua!</p>
+    <p>Speed up your development process by systematically reusing code, organising your dependencies and keeping track of versions.</p>
+</div>
+{% endblock %}
