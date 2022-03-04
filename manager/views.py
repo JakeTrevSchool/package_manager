@@ -5,4 +5,11 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("hello from the other branch")
+    context = {'developers':0, 'packages':-1}
+    return render(request, 'home.html', context=context)
+
+def explore(request):
+    return HttpResponse("this is the explore page")
+
+def login(request):
+    return HttpResponse("this is the login page")
