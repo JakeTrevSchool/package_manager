@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+
+{% extends 'base.html' %}
+
+{% block title_block %}
+    {% if package %}
+        {{ package.name }}
+    {% else %}
+        Unknown Package
+    {% endif %}
+{% endblock %}
+
+{% block body_block %}
+
+{% endblock %}
