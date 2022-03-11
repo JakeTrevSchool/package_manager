@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-
+from manager.models import UserProfile, Package
 # Create your views here.
 
 
 def index(request):
-    context = {'developers':0, 'packages':-1}
+    context = {
+        'developers': UserProfile.objects.count(),
+        'packages': Package.objects.count()
+    }
     return render(request, 'home.html', context=context)
 
 def explore(request):
