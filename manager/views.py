@@ -11,8 +11,17 @@ def index(request):
     }
     return render(request, 'home.html', context=context)
 
-def explore(request):
-    return HttpResponse("this is the explore page")
+def packages(request):
+    return render(request, 'packages.html')
+
+def package(request):
+    return render(request, 'package.html')
+
+def add_package(request):
+    return render(request, 'add_package.html')
+
+def contact(request):
+    return render(request, 'contact.html')
 
 def login(request):
     return HttpResponse("this is the login page")
