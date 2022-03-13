@@ -9,19 +9,19 @@ def index(request):
         'developers': UserProfile.objects.count(),
         'packages': Package.objects.count()
     }
-    return render(request, 'home.html', context=context)
+    return render(request, 'manager/home.html', context=context)
 
-def packages(request):
-    return render(request, 'packages.html')
+def explore(request):
+    return render(request, 'manager/explore.html')
 
 def package(request):
-    return render(request, 'package.html')
+    return render(request, 'manager/package.html')
 
 def add_package(request):
-    return render(request, 'add_package.html')
+    return render(request, 'manager/add_package.html')
 
 def contact(request):
-    return render(request, 'contact.html')
+    return render(request, 'manager/contact.html')
 
 def login(request):
     return HttpResponse("this is the login page")
