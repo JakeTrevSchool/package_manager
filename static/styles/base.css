@@ -1,0 +1,45 @@
+* {
+  /* normal CSS resets */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "poppins";
+}
+
+body {
+  background: url("/static/background.svg");
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  margin-bottom: 10px;
+  box-shadow: 0 3px 5px rgba(255, 255, 255, 0.24);
+}
+
+.top_link {
+  padding: 10px;
+  color: black;
+  text-decoration: underline rgba(0, 0, 0, 0);
+  transition: all 0.5s;
+  height: 100%;
+}
+
+.top_link:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+  text-decoration: underline;
+}
+
+.body_container {
+  margin: 10vh 10vw;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+#logo {
+  height: 10vh;
+}

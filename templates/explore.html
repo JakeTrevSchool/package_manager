@@ -49,12 +49,12 @@
                 <li>
                     <a href="{% url 'manager:show_personal_package' package.slug %}">{{ package.name }}</a>
                 </li>
-            {% end for %}
+            {% endfor %}
             </ul>
-                <button href="{% url 'manager:add_package' %}" class="btn btn-default btn-lg active" >Add a package</button>
+                <a href="{% url 'manager:add_package' %}" class="btn btn-default btn-lg active" >Add a package</button>
         {% else %}
             <strong>You need to log in to see your own package.</strong>
-        {% end if %}
+        {% endif %}
     </div>
 
     <div id="top_5packages">
