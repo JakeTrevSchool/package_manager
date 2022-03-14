@@ -1,0 +1,35 @@
+#static {
+    position: relative;
+    width: 1000px;
+    height: 700px;
+    border: solid;
+    margin: auto;
+}
+
+#my_package {
+    position: absolute;
+    left: 5%;
+    top: 5%;
+    width: 250px;
+    height: 625px;
+    background-color: rgba(238, 222, 222, 0.99);
+    border: 2px solid palevioletred;
+}
+
+#top_5packages {
+    position: absolute;
+    top: 5%;
+    width: 600px;
+    height: 140px;
+    right: 5%;
+    background-color: rgba(238, 222, 222, 0.99);
+}
+
+#search_packages {
+    position: absolute;
+    top: 30%;
+    width: 600px;
+    height: 450px;
+    right: 5%;
+    background-color: rgba(238, 222, 222, 0.99);
+}
