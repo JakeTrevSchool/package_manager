@@ -1,3 +1,6 @@
+from multiprocessing import managers
+from unicodedata import name
+from django.http import Http404, HttpResponse
 from django.shortcuts import redirect, render, reverse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -13,12 +16,16 @@ def index(request):
     }
     return render(request, 'manager/home.html', context=context)
 
+def contact(request):
+    return render(request, 'manager/contact.html')
+
 def explore(request):
     return render(request, 'manager/explore.html')
 
 def package(request):
     return render(request, 'manager/package.html')
 
+@login_required
 def add_package(request):
     form = PackageForm()
 
@@ -39,8 +46,39 @@ def add_package(request):
 
     return render(request, 'manager/add_package.html', {'form':form})
 
-def contact(request):
-    return render(request, 'manager/contact.html')
+@login_required
+def add_version(request, package_name):
+    try:
+        package = Package.objects.get(package_name=package_name)
+        
+        form = VersionForm()
+
+        if request.method == 'POST':
+            form = VersionForm(request.POST)
+
+            if form.is_valid():
+                version = form.save(commit=False)
+                version.package = package
+                version.save()
+
+                return redirect('manager:index')
+            else:
+                print(form.errors)
+
+    except Package.DoesNotExist:
+        return HttpResponse("does not exist")
+
+
+
+    form = VersionForm()
+
+    if request.method == 'POST':
+        form = VersionForm(request.POST)
+        if form.is_valid():
+            version = form.save(commit=False)
+
+        ...
+    return render(request, 'manager/add_version.html', {'form':form})
 
 @login_required
 def register_profile(request):
