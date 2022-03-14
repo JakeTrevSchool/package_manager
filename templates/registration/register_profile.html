@@ -1,0 +1,25 @@
+{% extends 'manager/base.html' %} {% load staticfiles %}
+<!--  -->
+
+{% block header_block %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'styles/registration.css' %}"
+/>
+{% endblock %}
+
+<!--  -->
+{% block body_block %}
+<h1></h1>
+<form
+  method="post"
+  action="{% url 'manager:register_profile' %}"
+  enctype="multipart/form-data"
+>
+  {% csrf_token %}
+  <!--  -->
+  {{ form.as_p}}
+  <input type="submit" value="Create Profile" />
+</form>
+{% endblock %}
