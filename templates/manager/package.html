@@ -2,111 +2,11 @@
 
 {% extends 'manager/base.html' %}
 
-{% block body_block %}
-<style type="text/css">
-    #static{
-            position: relative;
-            width: 1000px;
-            height: 700px;
-            border: solid;
-            margin: auto;
-        }
+{% block header_block %}
 
-    #detail{
-        border: solid;
-        position: absolute;
-        width: 950px;
-        height: 150px;
-        left: 25px;
-        top: 25px;
-    }
+<link rel="stylesheet" type="text/css" href="{% static 'styles/package.css' %}" />
 
-    #package_name{
-        position: absolute;
-        top: 5%;
-        width: 300px;
-        height: 50px;
-        left: 2%;
-    }
-
-    #update{
-        position: absolute;
-        width: 200px;
-        height: 50px;
-        left: 2%;
-        bottom: 5%;
-    }
-
-    #show_commit{
-        position: absolute;
-        width: 300px;
-        height: 150px;
-        left: 33%;
-        border-left: solid;
-        border-right: solid;
-    }
-
-    #likes_and_views{
-        position: absolute;
-        width: 300px;
-        height: 100px;
-        right: 13px;
-    }
-
-    #button{
-        position: absolute;
-        width: 300px;
-        height: 30px;
-        right: 25px;
-        bottom: 5px;
-    }
-
-    #show_file{
-        position: absolute;
-        border: solid;
-        width: 950px;
-        height: 475px;
-        left: 25px;
-        bottom: 25px;
-    }
-
-    #download{
-        position: absolute;
-        bottom: 5px;
-        left: 20px;
-    }
-
-    #delete{
-        position: absolute;
-        right: 5px;
-        bottom: 5px;
-    }
-
-    #cant_delete{
-        position: absolute;
-        right: 5px;
-        bottom: 5px;
-    }
-
-    #view_count{
-        position: absolute;
-        left: 20px;
-        top: 5px;
-    }
-
-    #like_count{
-        position: absolute;
-        right: 5px;
-        top: 5px;
-    }
-
-    #like_btn{
-        position: absolute;
-        right: 5px;
-        top: 40%;
-    }
-
-</style>
+{% endblock %}{% block body_block %}
 
 <div id="static">
 <div id="detail">

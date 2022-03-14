@@ -1,44 +1,13 @@
 <!DOCTYPE html>
 {% extends 'manager/base.html' %}
 
+{% block header_block %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'styles/add_package.css' %}" />
+
+{% endblock %}
+
 {% block body_block %}
-
-<style type="text/css" xmlns="http://www.w3.org/1999/html">
-    #static{
-            position: relative;
-            width: 800px;
-            height: 600px;
-            border: solid;
-            margin: auto;
-    }
-
-    #package_input{
-        position: absolute;
-        left: 10%;
-        top: 10%;
-        border: solid;
-    }
-    #name_version{
-        position: absolute;
-        left: 10%;
-        top: 40%;
-        border: solid;
-        width: 450px;
-        height: 130px;
-    }
-    #commit{
-        position: absolute;
-        left: 10%;
-        bottom: 10%;
-        border: solid;
-    }
-    #button{
-        position: absolute;
-        right: 10%;
-        bottom: 10%;
-    }
-
-</style>
 
 <div id="static">
 <div id="package_input">

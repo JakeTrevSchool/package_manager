@@ -1,45 +1,14 @@
 <!DOCTYPE html>
 {% extends 'manager/base.html' %}
 
+{% block header_block %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'styles/explore.css' %}" />
+
+{% endblock %}{% block body_block %}
+
 {% block body_block %}
-    <style type="text/css">
-        #static{
-            position: relative;
-            width: 1000px;
-            height: 700px;
-            border: solid;
-            margin: auto;
-        }
 
-        #my_package{
-            position: absolute;
-            left: 5%;
-            top: 5%;
-            width: 250px;
-            height: 625px;
-            background-color: rgba(238, 222, 222, 0.99);
-            border: 2px solid palevioletred;
-        }
-
-        #top_5packages{
-            position: absolute;
-            top: 5%;
-            width: 600px;
-            height: 140px;
-            right: 5%;
-            background-color: rgba(238, 222, 222, 0.99);
-        }
-
-        #search_packages{
-            position: absolute;
-            top: 30%;
-            width: 600px;
-            height: 450px;
-            right: 5%;
-            background-color: rgba(238, 222, 222, 0.99);
-        }
-
-    </style>
     <div id="static">
     <div id="my_package">
         <h2>My packages</h2>
@@ -51,7 +20,7 @@
                 </li>
             {% endfor %}
             </ul>
-                <a href="{% url 'manager:add_package' %}" class="btn btn-default btn-lg active" >Add a package</button>
+                <button href="{% url 'manager:add_package' %}" class="btn btn-default btn-lg active" >Add a package</button>
         {% else %}
             <strong>You need to log in to see your own package.</strong>
         {% endif %}
