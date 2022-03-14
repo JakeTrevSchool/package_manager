@@ -10,44 +10,13 @@
 {% block body_block %}
 
 <div id="static">
-    <div id="my_package">
-        <h3>My packages</h3>
-        <form>
-            {% csrf_token %}
-            {% if user.is_authenticated %}
-
-            <table class="table table-hover">
-                <thead>
-                <tr>
-                    <th>Package name</th>
-                    <th>Version</th>
-                    <th>Detail</th>
-                </tr>
-                </thead>
-                {% for package in user_packages %}
-                <tbody>
-                <tr>
-                    <td>{{% package.name %}}</td>
-                    <td>{{% package.version %}}</td>
-                    <td><a href="">check</a></td>
-                </tr>
-                </tbody>
-                {% endfor %}
-            </table>
-
-        </form>
-        <button href="{% url 'manager:add_package' %}" class="btn btn-default btn-lg active">Add a package</button>
-        {% else %}
-        <strong>You need to log in to see your own package.</strong>
-        {% endif %}
-    </div>
 
     <div id="top_5packages">
         <h3>Most likes Packages</h3>
         <form>
             {% csrf_token %}
             {% if packages %}
-            <
+
             <table class="table table-hover">
                 <thead>
                 <tr>
