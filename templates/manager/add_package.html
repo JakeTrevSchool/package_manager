@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-{% extends 'manager/base.html' %} {% block header_block %}
+{% extends 'manager/base.html' %} {% load staticfiles %}
 
+<!--  -->
+{% block header_block %}
 <link
   rel="stylesheet"
   type="text/css"
   href="{% static 'styles/add_package.css' %}"
 />
-
 {% endblock %} {% block body_block %}
 
 <div id="static">

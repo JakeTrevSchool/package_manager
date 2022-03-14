@@ -20,10 +20,15 @@ def contact(request):
     return render(request, 'manager/contact.html')
 
 def explore(request):
-    return render(request, 'manager/explore.html')
+    top_packages = Package.objects.filter(public=True)[:5]
 
-def package(request):
-    return render(request, 'manager/package.html')
+
+    context_dict = {'top_packages':top_packages}
+    return render(request, 'manager/explore.html', context=context_dict)
+
+def package(request, package_name):
+    context_dict = {'var1':False}
+    return render(request, 'manager/package.html', context=context_dict)
 
 @login_required
 def add_package(request):
