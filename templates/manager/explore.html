@@ -27,22 +27,35 @@
         </div>
 
         <div class="flex_container">
-
             <div class="segment" id="top_5packages">
-                <h2>Most view Packages</h2>
+                <h3>Most likes Packages</h3>
                 {% if top_packages %}
-                <ul>
-                    {% for package in top_packages %}
-                    <li>
-                        <a href="{% url 'manager:index' %}">{{ package.package_name }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-                <a href="{% url 'manager:add_package' %}" class="btn btn-default btn-lg active" >Add a package</button>
-                    {% else %}
-                    <strong>There are no packages</strong>
-                    {% endif %}
-                </div>
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Package name</th>
+                                <th>Version</th>
+                                <th>Author</th>
+                                <th>Downloads</th>
+                                <th>Views</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        {% for package in top_packages %}
+                            <tr>
+                                <td>{{ package.package_name }}</td>
+                                <td>{{ package.version }}</td>
+                                <td>{{ package.author }}</td>
+                                <td>{{ package.downloads }}</td>
+                                <td>{{ package.views }}</td>
+                                <td><a href="">check</a></td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                {% else %}
+                    <strong>There are no packages present.</strong>
+                {% endif %}
+            </div>
                 <div class="segment">
                     <h2>Search Packages</h2>
                     <a href="{% url 'manager:explore' %}">explore packages</a>
