@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render, reverse
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from manager.forms import UserProfileForm
+from manager.forms import UserProfileForm, PackageForm, VersionForm, CommentForm
 from manager.models import UserProfile, Package
 # Create your views here.
 
@@ -20,7 +20,24 @@ def package(request):
     return render(request, 'manager/package.html')
 
 def add_package(request):
-    return render(request, 'manager/add_package.html')
+    form = PackageForm()
+
+    if request.method == 'POST':
+        form = PackageForm(request.POST)
+
+        if form.is_valid():
+            package = form.save(commit=False)
+            package.author = UserProfile.objects.get(user=request.user)
+
+            package.downloads = 0
+            package.views = 0
+            package.current_version = "0.0.0"
+            package.save()
+            return redirect('manager:index')
+        else:
+            print(form.errors)
+
+    return render(request, 'manager/add_package.html', {'form':form})
 
 def contact(request):
     return render(request, 'manager/contact.html')

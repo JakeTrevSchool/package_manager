@@ -1,68 +1,49 @@
 <!DOCTYPE html>
-{% extends 'manager/base.html' %}
-
-{% block body_block %}
+{% extends 'manager/base.html' %} {% block body_block %}
 
 <style type="text/css" xmlns="http://www.w3.org/1999/html">
-    #static{
-            position: relative;
-            width: 800px;
-            height: 600px;
-            border: solid;
-            margin: auto;
-    }
+  #static {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    border: solid;
+    margin: auto;
+  }
 
-    #package_input{
-        position: absolute;
-        left: 10%;
-        top: 10%;
-        border: solid;
-    }
-    #name_version{
-        position: absolute;
-        left: 10%;
-        top: 40%;
-        border: solid;
-        width: 450px;
-        height: 130px;
-    }
-    #commit{
-        position: absolute;
-        left: 10%;
-        bottom: 10%;
-        border: solid;
-    }
-    #button{
-        position: absolute;
-        right: 10%;
-        bottom: 10%;
-    }
-
+  #package_input {
+    position: absolute;
+    left: 10%;
+    top: 10%;
+    border: solid;
+  }
+  #name_version {
+    position: absolute;
+    left: 10%;
+    top: 40%;
+    border: solid;
+    width: 450px;
+    height: 130px;
+  }
+  #commit {
+    position: absolute;
+    left: 10%;
+    bottom: 10%;
+    border: solid;
+  }
+  #button {
+    position: absolute;
+    right: 10%;
+    bottom: 10%;
+  }
 </style>
 
 <div id="static">
-<div id="package_input">
-    <label>Package input</label>
-    <p class="help-block">Move your cursor on the Choose File button, you can see what file you will upload.</p>
-    <input type="file" name="file" id="file" webkitdirectory/>
-</div>
-
-<div id="name_version">
-    <label>Name</label>
-    <input type="text" class="form-control" placeholder="Package name">
-    </br>
-    <label>Version</label>
-    <input type="text" class="form-control" placeholder="e.g.1.7.2">
-</div>
-
-<div id="commit">
-    <label>Commit</label>
-    <textarea rows="5" cols="50" style="resize:none;" style="border: 0">abc</textarea>
-</div>
-
-<div id="button">
-    <button type="submit" class="btn btn-default">Upload</button>
-</div>
+  <form method="post" action="{% url 'manager:add_package' %}">
+    {% csrf_token %} {{ form.as_p }}
+    <div id="button">
+      <button type="submit" class="btn btn-default">Upload</button>
+    </div>
+  </form>
 </div>
 
 {% endblock %}

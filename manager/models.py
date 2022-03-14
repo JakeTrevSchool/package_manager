@@ -15,7 +15,7 @@ class Package(models.Model):
     #!is this a good way to do this?
     #!i suppose it indicates "ownership"
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    #collaborators = models.ManyToManyField(UserProfile)
+    tags = models.TextField()
 
     package_name = models.CharField(max_length=120, unique=True)
     current_version = models.TextField() #idk how to sort this one out ngl
@@ -23,13 +23,13 @@ class Package(models.Model):
     downloads = models.IntegerField()
     views = models.IntegerField()
     public = models.BooleanField()
-    tags = models.TextField()
     #!we could also do this as a json-encoded array. opinions?
 
 class Version(models.Model):
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     version_ID = models.CharField(max_length=20)
     code = models.FileField(upload_to="packages/<package_name>")
+    commit = models.TextField()
     dependencies = models.TextField() #!encode as json?
 
 class Comment(models.Model):
