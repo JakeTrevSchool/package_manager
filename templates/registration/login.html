@@ -1,1 +1,30 @@
-{% extends 'manager/base.html' %}
+{% extends 'manager/base.html' %} {% load staticfiles %}
+<!--  -->
+
+{% block header_block %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'styles/registration.css' %}"
+/>
+{% endblock %}
+
+<!--  -->
+{% block body_block %}
+<h1>login</h1>
+
+<div class="reg_container">
+  <form class="block" method="post" action=".">
+    {% csrf_token %} {{ form.as_p }}
+    <input type="submit" value="Log in" />
+    <p>
+      <input type="hidden" name="next" value="{{ next }}" />
+    </p>
+  </form>
+
+  <p class="block">
+    or, sign up for an account
+    <a href="{% url 'registration_register' %}"> here!</a>
+  </p>
+</div>
+{% endblock %}
