@@ -43,3 +43,8 @@ header {
 #logo {
   height: 10vh;
 }
+
+#avatar {
+  height: 10vh;
+  border-radius: 50%;
+}

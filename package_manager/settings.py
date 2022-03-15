@@ -127,6 +127,10 @@ STATICFILES_DIRS = [STYLE_DIR, ]
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # registration options
 REGISTRATION_OPEN = True
 

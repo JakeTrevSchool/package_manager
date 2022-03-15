@@ -40,7 +40,7 @@
         href=" {% url 'auth_logout' %}?next={% url 'manager:index' %}"
         ><h1>Log Out</h1></a
       >
-      <img class="rounded-circle article-img" src="{{ user.UserProfile.avatar.url }}">
+      <img id="avatar" src="{{ user.userprofile.avatar.url }}" alt="avatar" />
       {% else %}
       <a class="top_link" href="{% url 'auth_login' %}"><h1>Log In</h1></a>
       {% endif %}
