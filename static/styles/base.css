@@ -6,6 +6,10 @@
   font-family: "poppins";
 }
 
+:root {
+  --maroon: #700011;
+}
+
 body {
   background: url("/static/background.svg");
 }
@@ -19,11 +23,6 @@ header {
   background-color: white;
   margin-bottom: 10px;
   box-shadow: 0 3px 5px rgba(255, 255, 255, 0.24);
-}
-
-.header_item {
-  padding: 10px;
-  margin: 10px;
 }
 
 .link {
@@ -66,4 +65,14 @@ header {
   border-radius: 50%;
   object-fit: cover;
   margin: 10px;
+}
+
+/* some common styles used around the site */
+.button {
+  background-color: var(--maroon);
+  width: fit-content;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  padding: 5px 10px;
 }

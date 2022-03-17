@@ -1,13 +1,17 @@
-from multiprocessing import managers
-from unicodedata import name
-from django.http import Http404, HttpResponse
-from django.shortcuts import redirect, render, reverse
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.urls import reverse
 from manager.forms import UserProfileForm, PackageForm, VersionForm, CommentForm
 from manager.models import UserProfile, Package
 # Create your views here.
 
+# a helper method
+def getUserPackages(user: User):
+    author = UserProfile.objects.get(user=user)
+    packages = Package.objects.filter(author=author)
+    return packages
 
 def index(request):
     context = {
@@ -21,13 +25,17 @@ def contact(request):
 
 def explore(request):
     top_packages = Package.objects.filter(public=True)[:5]
+    user_packages = getUserPackages(request.user)
 
-
-    context_dict = {'top_packages':top_packages}
+    context_dict = {
+        'top_packages':top_packages,
+        'user_packages':user_packages,
+    }
     return render(request, 'manager/explore.html', context=context_dict)
 
 def package(request, package_name):
-    context_dict = {'var1':False}
+    package = get_object_or_404(Package, package_name=package_name)
+    context_dict = {'package':package}
     return render(request, 'manager/package.html', context=context_dict)
 
 @login_required

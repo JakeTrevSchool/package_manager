@@ -5,30 +5,50 @@
 <!--  -->
 {% block header_block %}
 <link rel="stylesheet" type="text/css" href="{% static 'styles/explore.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'styles/tables.css' %}" />
 {% endblock %}
 
 <!--  -->
 {% block body_block %}
     <div id="static">
-        <div class="segment" id="my_package">
+        <div class="segment" id="user_packages">
             <h2>My packages</h2>
             {% if user.is_authenticated %}
-                <ul>
+                {% if user_packages%}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Package name</th>
+                            <th>Version</th>
+                            <th>Author</th>
+                            <th>Downloads</th>
+                            <th>Views</th>
+                            <th>Link</th>
+                        </tr>
+                    </thead>
                     {% for package in user_packages %}
-                        <li>
-                            <a href="{% url 'manager:show_personal_package' package.slug %}">{{ package.name }}</a>
-                        </li>
+                        <tr>
+                            <td><a href="{% url 'manager:package' package.package_name %}">{{ package.package_name }}</a></td>
+                            <td><a href="{% url 'manager:package' package.package_name %}">{{ package.version }}</a></td>
+                            <td><a href="{% url 'manager:package' package.package_name %}">{{ package.author }}</a></td>
+                            <td><a href="{% url 'manager:package' package.package_name %}">{{ package.downloads }}</a></td>
+                            <td><a href="{% url 'manager:package' package.package_name %}">{{ package.views }}</a></td>
+                            <td><a href="{% url 'manager:package' package.package_name %}">x</a></td>
+                        </tr>
                     {% endfor %}
-                </ul>
-                <a href="{% url 'manager:add_package' %}" class="btn btn-default btn-lg active" >Add a package</a>
+                </table>
+                {% else %}
+                <h3>you havent uploaded any packages yet</h3>
+                {% endif %}
+                <a href="{% url 'manager:add_package' %}" class="button" >Add a package</a>
             {% else %}
                 <strong>You need to log in to see your own package.</strong>
             {% endif %}
         </div>
 
         <div class="flex_container">
-            <div class="segment" id="top_5packages">
-                <h3>Most likes Packages</h3>
+            <div class="segment" id="top_packages">
+                <h3>Top Packages</h3>
                 {% if top_packages %}
                     <table class="table table-hover">
                         <thead>
@@ -38,17 +58,17 @@
                                 <th>Author</th>
                                 <th>Downloads</th>
                                 <th>Views</th>
-                                <th>Detail</th>
+                                <th>Link</th>
                             </tr>
                         </thead>
                         {% for package in top_packages %}
                             <tr>
-                                <td>{{ package.package_name }}</td>
-                                <td>{{ package.version }}</td>
-                                <td>{{ package.author }}</td>
-                                <td>{{ package.downloads }}</td>
-                                <td>{{ package.views }}</td>
-                                <td><a href="">check</a></td>
+                                <td><a href="{% url 'manager:package' package.package_name %}">{{ package.package_name }}</a></td>
+                                <td><a href="{% url 'manager:package' package.package_name %}">{{ package.version }}</a></td>
+                                <td><a href="{% url 'manager:package' package.package_name %}">{{ package.author }}</a></td>
+                                <td><a href="{% url 'manager:package' package.package_name %}">{{ package.downloads }}</a></td>
+                                <td><a href="{% url 'manager:package' package.package_name %}">{{ package.views }}</a></td>
+                                <td><a href="{% url 'manager:package' package.package_name %}">x</a></td>
                             </tr>
                         {% endfor %}
                     </table>

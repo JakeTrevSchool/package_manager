@@ -1,5 +1,4 @@
 #static {
-  border: solid;
   display: flex;
   flex-direction: row;
 }
@@ -11,9 +10,10 @@
 }
 
 .segment {
-  background-color: rgba(238, 222, 222, 0.99);
+  padding: 10px;
   margin: 10px;
-  border: 2px solid palevioletred;
+  border-radius: 5px;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.384);
 }
 
 #my_package {
