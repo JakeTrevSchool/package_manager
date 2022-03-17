@@ -14,7 +14,7 @@
 {% block body_block %}
 <div id="static">
   <div id="detail">
-    <div id="package_name">{{ package.name }}</div>
+    <div id="package_name">{{ package.package_name }}</div>
 
     <div id="update">
       <!--  document.getElementById('para').innerHTML = Date().commit  -->
@@ -26,7 +26,7 @@
 
     <div id="likes_and_views">
       <strong id="view_count">{{ package.views }}</strong> views
-      <strong id="like_count">{{ package.likes }}</strong> likes
+      <strong id="like_count">{{ package.downloads }}</strong> downloads
       <!--  -->
       {% if user.is_authenticated %}
       <button
