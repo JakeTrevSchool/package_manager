@@ -17,7 +17,7 @@ class VersionForm(forms.ModelForm):
     new_current = forms.BooleanField()
     class Meta:
         model = Version
-        fields = ('version_ID', 'code', 'dependencies', 'commit')
+        fields = ('version_ID', 'code', 'dependencies', 'comment')
 
 class CommentForm(forms.ModelForm):
     class Meta:
