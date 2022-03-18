@@ -1,0 +1,40 @@
+{% extends 'manager/base.html' %}
+{% load staticfiles %}
+
+{% block header_block %}
+	<link rel="stylesheet" type="text/css" href="{% static 'styles/tables.css' %}" />
+{% endblock %}
+
+{% block body_block %}
+<div>
+	<div id="profile_pic">
+		<img id="avatar" src="{{ user.userprofile.avatar.url }}"
+			alt="avatar" />
+	</div>
+
+	<div id="name">
+		<h1>{{profile.user.username}}</h1>
+	</div>
+
+	<div id="my_packages">
+		<table class="table table-hover"><thead>
+			<thead>
+				<tr>
+					<th>Package name</th>
+					<th>Version</th>           
+                </tr>
+            </thead>
+			{% for package in user_packages %}
+			<tbody>
+			<tr>
+				<td>{{ package.package_name }}</td>	
+				<td>{{ package.version }}</td>
+				<td><a href="">private</a></td>
+			</tr>
+			</tbody>
+			{% endfor %}
+		</table>
+	</div>
+</div>
+{% endblock %}
+

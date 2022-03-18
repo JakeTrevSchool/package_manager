@@ -110,4 +110,12 @@ def register_profile(request):
     
     context_dict = {'form': form}
     return render(request, 'registration/register_profile.html', context_dict)
-    
+
+def profile(request, profile_name:str):
+    user = get_object_or_404(User, username=profile_name)
+    profile = get_object_or_404(UserProfile, user=user)
+
+    user_packages = getUserPackages(user)
+
+    context_dict= {'profile':profile, 'user_packages':user_packages}
+    return render(request, 'manager/profile.html', context=context_dict)
