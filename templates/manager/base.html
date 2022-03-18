@@ -23,23 +23,33 @@
     {%block header_block%} {%endblock%}
   </head>
   <body>
-    <div>
-      <header>
-        <a class="top_link" href="{% url 'manager:index' %}">
-          <img id="logo" src="{% static 'logo.png' %}" alt="logo" />
-        </a>
-        <a class="top_link" href="{% url 'manager:explore' %}"
-          ><h1>explore packages</h1>
-        </a>
-        <a class="top_link" href="{% url 'manager:contact' %}"
-          ><h1>contact us</h1></a
+    <header>
+      <a class="link" href="{% url 'manager:index' %}">
+        <img id="logo" src="{% static 'logo.png' %}" alt="logo" />
+      </a>
+      <a class="header_item link" href="{% url 'manager:explore' %}"
+        ><h1>explore packages</h1>
+      </a>
+      <a class="header_item link" href="{% url 'manager:contact' %}"
+        ><h1>contact us</h1></a
+      >
+      {% if user.is_authenticated %}
+      <div class="header_item" id="logged_in_profile">
+        <a
+          class="link"
+          id="logout"
+          href=" {% url 'auth_logout' %}?next={% url 'manager:index' %}"
+          ><h1>Log Out</h1></a
         >
-        <a class="top_link" href="{% url 'manager:login' %}"
-          ><h1>login/Register</h1></a
-        >
-        <!-- or logout; work out how to do that -->
-      </header>
-      <div class="body_container">{% block body_block %} {% endblock %}</div>
-    </div>
+        <img id="avatar" src="{{ user.userprofile.avatar.url }}" alt="avatar" />
+      </div>
+      {% else %}
+      <a class="header_item link" href="{% url 'auth_login' %}"
+        ><h1>Log In</h1></a
+      >
+      {% endif %}
+      <!-- or logout; work out how to do that -->
+    </header>
+    <div class="body_container">{% block body_block %} {% endblock %}</div>
   </body>
 </html>

@@ -6,11 +6,16 @@
   font-family: "poppins";
 }
 
+:root {
+  --maroon: #700011;
+}
+
 body {
   background: url("/static/background.svg");
 }
 
 header {
+  height: 8vh;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -20,15 +25,14 @@ header {
   box-shadow: 0 3px 5px rgba(255, 255, 255, 0.24);
 }
 
-.top_link {
-  padding: 10px;
+.link {
   color: black;
   text-decoration: underline rgba(0, 0, 0, 0);
   transition: all 0.5s;
   height: 100%;
 }
 
-.top_link:hover {
+.link:hover {
   background-color: rgba(0, 0, 0, 0.2);
   text-decoration: underline;
 }
@@ -41,5 +45,34 @@ header {
 }
 
 #logo {
+  height: 8vh;
+  margin-left: 10px;
+}
+
+#logged_in_profile {
+  display: flex;
+  justify-content: center;
   height: 10vh;
+}
+
+#logout {
+  padding: 10px;
+}
+
+#avatar {
+  height: 5vh;
+  width: 5vh;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 10px;
+}
+
+/* some common styles used around the site */
+.button {
+  background-color: var(--maroon);
+  width: fit-content;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  padding: 5px 10px;
 }

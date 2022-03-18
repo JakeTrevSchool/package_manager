@@ -1,42 +1,47 @@
 <!DOCTYPE html>
+{% extends 'manager/base.html' %} {% load staticfiles %}
 
-{% extends 'manager/base.html' %}
-
+<!--  -->
 {% block header_block %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'styles/package.css' %}"
+/>
+{% endblock %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'styles/package.css' %}" />
-
-{% endblock %}{% block body_block %}
-
+<!--  -->
+{% block body_block %}
 <div id="static">
-<div id="detail">
-<div id="package_name">
-    {{ package.name }}
-</div>
+  <div id="detail">
+    <div id="package_name">{{ package.package_name }}</div>
 
-<div id="update">
-    {{ document.getElementById('para').innerHTML = Date().commit }}
-</div>
+    <div id="update">
+      <!--  document.getElementById('para').innerHTML = Date().commit  -->
+    </div>
 
-<div id="show_commit">
-    <h4>show the commit when upload</h4>
-    {{ commit.show() }}
-</div>
+    <div id="show_commit">
+      <h4>show the commit when upload</h4>
+    </div>
 
-<div id="likes_and_views">
-    <strong id="view_count">{{ package.views }}</strong> views
-    <strong id="like_count">{{ package.likes }}</strong> likes
-    {% if user.is_authenticated %}
-        <button id="like_btn"
+    <div id="likes_and_views">
+      <strong id="view_count">{{ package.views }}</strong> views
+      <strong id="like_count">{{ package.downloads }}</strong> downloads
+      <!--  -->
+      {% if user.is_authenticated %}
+      <button
+        id="like_btn"
         data-pakcageid="{{ package.id }}"
         class="btn btn-primary btn-sm"
-        type="button">
+        type="button"
+      >
         <span data-feather="thumbs-up"></span>
         Like Package
-        </button>
-    {% endif %}
-</div>
+      </button>
+      {% endif %}
+    </div>
 
+<<<<<<< HEAD
 <div id="button">
     {% if user.is_authenticated %}
     <button type="button" id="download" class="btn btn-default"><a href="" download="download"></a>Download</button>
@@ -49,12 +54,34 @@
         <strong>You need to log in.</strong>
     {% endif %}
 </div>
+=======
+    <div id="button">
+      <button type="button" id="download" class="btn btn-default">
+        <a href="" download="download"></a>Download
+      </button>
+      {% if var1 %}
+      <button type="button" id="delete" class="btn btn-default">
+        <a href="" delete="delete"></a>Delete
+      </button>
+      <a onclick="if(confirm())return false;location.href=''">Delete</a>
+      {% else %}
+      <button
+        type="button"
+        id="cant_delete"
+        class="btn btn-default"
+        disabled="disabled"
+      >
+        <a href="" delete="delete"></a>Delete
+      </button>
+      <strong>You need to log in to see options.</strong>
+      {% endif %}
+    </div>
+  </div>
+>>>>>>> 09d06a8492611968c8a8edb1bafb798f5f252464
 
-</div>
-
-<div id="show_file">
+  <div id="show_file">
     <h4>show what inside the package</h4>
-</div>
+  </div>
 </div>
 
 {% endblock %}

@@ -1,0 +1,35 @@
+/* table styles */
+table {
+  width: 100%;
+  text-align: left;
+  border: none;
+  border-spacing: 0;
+  border-radius: 3px;
+}
+
+th {
+  background-color: var(--maroon);
+}
+
+th,
+td {
+  padding: 5px;
+}
+
+td > a {
+  text-decoration: none;
+  color: black;
+}
+
+tr {
+  background-color: white;
+}
+
+tr:nth-child(even) {
+  background-color: rgb(204, 204, 204);
+}
+
+.header_item {
+  padding: 10px;
+  margin: 10px;
+}

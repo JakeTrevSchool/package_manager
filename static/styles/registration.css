@@ -1,0 +1,44 @@
+.reg_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+
+  margin: 0 10px;
+  width: 50%;
+  border-radius: 10px;
+  background-color: rgb(255, 255, 255);
+}
+
+.full {
+  width: 100%;
+  background-color: transparent;
+}
+
+input[type="submit"] {
+  background-color: var(--maroon);
+  width: fit-content;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+}
+
+p {
+  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 10px;
+}
+
+ul {
+  list-style-type: none;
+}
