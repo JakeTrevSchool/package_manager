@@ -67,6 +67,11 @@
   <div id="show_file">
     <h4>show what inside the package</h4>
   </div>
+  <a
+    href="{% url 'manager:add_version' package_name=package.package_name %}"
+    class="button"
+    >add version</a
+  >
 </div>
 
 {% endblock %}

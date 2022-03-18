@@ -24,15 +24,25 @@ class Package(models.Model):
 
     def __str__(self) -> str:
         return self.package_name
+
+class File(models.Model):
+    readme = models.BooleanField(default=False)
+    code_file = models.FileField()
+
 class Version(models.Model):
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
-    version_ID = models.CharField(max_length=20)
-    code = models.FileField(upload_to="packages/<package_name>")
+    version_ID = models.CharField(max_length=20, unique=True)
+    
+
+    
+    code_files = models.ManyToManyField(File)
+
     comment = models.TextField(default="")
-    dependencies = models.TextField(default="") #!encode as json?
+    dependencies = models.TextField(default="")
     
     def __str__(self) -> str:
         return self.package + ":" + self.version_ID
+
 
 class Comment(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
