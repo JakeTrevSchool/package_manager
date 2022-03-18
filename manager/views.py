@@ -83,15 +83,17 @@ def handle_file_upload(f, destination: str):
 @login_required
 def add_version(request: HttpRequest, package_name:str):
     package = get_object_or_404(Package, package_name=package_name)
-    
     form = VersionForm()
+
     print("the view is working")
-    if request.method == 'post':
+    if request.method == 'POST':
         print("post")
         form = VersionForm(request.POST, request.FILES)
         if form.is_valid():
             print("form validated")
             version: Version = form.save(commit=False)
+            version.package = package
+
             code_files = request.FILES.values()
             
             # compute the destination
@@ -108,31 +110,7 @@ def add_version(request: HttpRequest, package_name:str):
         else:
             print (form.errors)
 
-    return render(request, 'manager/add_version.html', {'form':form})
-    
-    if request.method == 'POST':
-        form = VersionForm(request.POST)
-
-        if form.is_valid():
-            version = form.save(commit=False)
-            version.package = package
-            version.save()
-
-            return redirect('manager:index')
-        else:
-            print(form.errors)
-
-
-    form = VersionForm()
-
-    if request.method == 'POST':
-        form = VersionForm(request.POST)
-        if form.is_valid():
-            version = form.save(commit=False)
-
-        ...
-    return render(request, 'manager/add_version.html', {'form':form})
-
+    return render(request, 'manager/add_version.html', {'form':form, 'package':package})
 
 @login_required
 def register_profile(request: HttpRequest):
