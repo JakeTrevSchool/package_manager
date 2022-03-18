@@ -1,10 +1,10 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
 from manager.forms import UserProfileForm, PackageForm, VersionForm, CommentForm
-from manager.models import UserProfile, Package
+from manager.models import UserProfile, Package, Version, File
 # Create your views here.
 
 # a helper method
@@ -13,17 +13,17 @@ def getUserPackages(user: User):
     packages = Package.objects.filter(author=author)
     return packages
 
-def index(request):
+def index(request: HttpRequest):
     context = {
         'developers': UserProfile.objects.count(),
         'packages': Package.objects.count()
     }
     return render(request, 'manager/home.html', context=context)
 
-def contact(request):
+def contact(request: HttpRequest):
     return render(request, 'manager/contact.html')
 
-def explore(request):
+def explore(request: HttpRequest):
     top_packages = Package.objects.filter(public=True)[:5]
     user_packages = getUserPackages(request.user)
 
@@ -33,13 +33,14 @@ def explore(request):
     }
     return render(request, 'manager/explore.html', context=context_dict)
 
-def package(request, package_name):
+def package(request: HttpRequest, package_name: str):
     package = get_object_or_404(Package, package_name=package_name)
     context_dict = {'package':package}
     return render(request, 'manager/package.html', context=context_dict)
 
+
 @login_required
-def add_package(request):
+def add_package(request: HttpRequest):
     form = PackageForm()
 
     if request.method == 'POST':
@@ -59,28 +60,53 @@ def add_package(request):
 
     return render(request, 'manager/add_package.html', {'form':form})
 
+
+def handle_file_upload(f, destination: str):
+    with open(destination, "wb+") as target:
+        for chunk in f.chunks():
+            target.write(chunk)
+    
 @login_required
-def add_version(request, package_name):
-    try:
-        package = Package.objects.get(package_name=package_name)
-        
-        form = VersionForm()
+def add_version(request: HttpRequest, package_name:str):
+    package = get_object_or_404(Package, package_name=package_name)
+    
+    form = VersionForm()
+    print("the view is working")
+    if request.method == 'post':
+        print("post")
+        form = VersionForm(request.POST, request.FILES)
+        if form.is_valid():
+            print("form validated")
+            version: Version = form.save(commit=False)
+            code_files = request.FILES.values()
+            
+            # compute the destination
+            version_id = version.version_ID
+            dest = f"packages/{package_name}/{version_id}/"
 
-        if request.method == 'POST':
-            form = VersionForm(request.POST)
+            for f in code_files:
+                handle_file_upload(f, dest + f.name)
+                new_f = File(file=f).save()
+                version.code_files.add(new_f)
+                
+            version.save()
+            return redirect('manager:index')
+        else:
+            print (form.errors)
 
-            if form.is_valid():
-                version = form.save(commit=False)
-                version.package = package
-                version.save()
+    return render(request, 'manager/add_version.html', {'form':form})
+    
+    if request.method == 'POST':
+        form = VersionForm(request.POST)
 
-                return redirect('manager:index')
-            else:
-                print(form.errors)
+        if form.is_valid():
+            version = form.save(commit=False)
+            version.package = package
+            version.save()
 
-    except Package.DoesNotExist:
-        return HttpResponse("does not exist")
-
+            return redirect('manager:index')
+        else:
+            print(form.errors)
 
 
     form = VersionForm()
@@ -93,8 +119,9 @@ def add_version(request, package_name):
         ...
     return render(request, 'manager/add_version.html', {'form':form})
 
+
 @login_required
-def register_profile(request):
+def register_profile(request: HttpRequest):
     form = UserProfileForm()
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES)
