@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+{% extends 'manager/base.html' %}
+{% load staticfiles %}
+
+{% block header_block %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/user_profile.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'styles/tables.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'styles/page_turn.css' %}"/>
+{% endblock %}
+
+{% block body_block %}
+<div id="static">
+    <div id="username">
+        <h2>Hi,</h2>
+        {{ user.name }}
+    </div>
+
+    <div id="profile_avatar">
+        <h4>show the user avatar here</h4>
+    </div>
+
+    <div id="profile_description">
+        <h4>show the user self description</h4>
+    </div>
+
+    <div>
+        no sure if we need more...
+    </div>
+
+    <div id="user_package">
+    <h3>My packages</h3>
+    {% if user.is_authenticated %}
+        {% if user_packages%}
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Package name</th>
+                <th>Version</th>
+                <th>Detail</th>
+            </tr>
+            </thead>
+            {% for package in user_packages %}
+                <tbody>
+                <tr>
+                    <td><a href="{% url 'manager:package' package.package_name %}">{{ package.package_name }}</a></td>
+                    <td><a href="{% url 'manager:package' package.package_name %}">{{ package.version }}</a></td>
+                    <td><a href="{% url 'manager:package' package.package_name %}">x</a></td>
+                </tr>
+                </tbody>
+            {% endfor %}
+        </table>
+        <div class="page">
+            {% if packages_before %}
+            <a href="">Previous</a>
+            {% else %}
+            <span class="previous_page disabled">Previous</span>
+            {% for page in %}
+            <a href="">1</a>
+            {% endfor %}
+            {% if packages_after %}
+            <a href="">Next</a>
+            {% else %}
+            <span class="next_page disabled">Next</span>
+        </div>
+        {% else %}
+        <h3>you havent uploaded any packages yet</h3>
+        {% endif %}
+    {% endif %}
+    </div>
+
+    <div id="add_package">
+        <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
+    </div>
+
+</div>
+{% endblock %}

@@ -4,6 +4,7 @@
 {% block header_block %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'styles/explore.css' %}"/>
+<link rel="stylesheet" type="text/css" href="{% static 'styles/page_turn.css' %}"/>
 
 {% endblock %}{% block body_block %}
 
@@ -13,8 +14,6 @@
 
     <div id="top_5packages">
         <h3>Most likes Packages</h3>
-        <form>
-            {% csrf_token %}
             {% if packages %}
 
             <table class="table table-hover">
@@ -23,23 +22,22 @@
                     <th>Package name</th>
                     <th>Version</th>
                     <th>Author</th>
-                    <th>Likes</th>
+                    <th>Downloads</th>
                     <th>Views</th>
                     <th>Detail</th>
                 </tr>
                 </thead>
                 {% for package in packages %}
                 <tr>
-                    <td>{{% package.name %}}</td>
-                    <td>{{% package.version %}}</td>
-                    <td>{{% package.author %}}</td>
-                    <td>{{% package.likes %}}</td>
-                    <td>{{% package.views %}}</td>
+                    <td>{{ package.name }}</td>
+                    <td>{{ package.version }}</td>
+                    <td>{{ package.author }}</td>
+                    <td>{{ package.download }}</td>
+                    <td>{{ package.views }}</td>
                     <td><a href="">check</a></td>
                 </tr>
                 {% endfor %}
             </table>
-        </form>
         {% else %}
         <strong>There are no packages present.</strong>
         {% endif %}
@@ -49,13 +47,40 @@
         <h3>Search Packages</h3>
         <a href="{% url 'manager:explore' %}">explore packages</a>
         {% if packages %}
-        <ul>
-            {% for package in packages %}
-            <li>
-                <a href="{% url 'manager:show_explore_package' package.slug %}">{{ package.name }}</a>
-            </li>
+
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Package name</th>
+                    <th>Version</th>
+                    <th>Author</th>
+                    <th>Views</th>
+                    <th>Detail</th>
+                </tr>
+                </thead>
+                {% for package in packages_explore %}
+                <tr>
+                    <td>{{ package.name }}</td>
+                    <td>{{ package.version }}</td>
+                    <td>{{ package.author }}</td>
+                    <td>{{ package.views }}</td>
+                    <td><a href="">check</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        <div class="page">
+            {% if packages_before %}
+            <a href="">Previous</a>
+            {% else %}
+            <span class="previous_page disabled">Previous</span>
+            {% for page in %}
+            <a href="">1</a>
             {% endfor %}
-        </ul>
+            {% if packages_after %}
+            <a href="">Next</a>
+            {% else %}
+            <span class="next_page disabled">Next</span>
+        </div>
         {% else %}
         <strong>There are no packages present.</strong>
         {% endif %}

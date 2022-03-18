@@ -40,7 +40,7 @@
 <div id="button">
     {% if user.is_authenticated %}
     <button type="button" id="download" class="btn btn-default"><a href="" download="download"></a>Download</button>
-        {% if user.name=package.author %}
+        {% if user.name==package.author %}
             <button type="button" id="delete" class="btn btn-default"><a href="" delete="delete"></a>Delete</button>
             <a onclick="if(confirm())return false;location.href=''">Delete</a>
         {% else if %}
