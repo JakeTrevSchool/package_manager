@@ -1,3 +1,5 @@
+from mmap import PAGESIZE
+from tkinter import Pack
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
@@ -23,9 +25,21 @@ def index(request: HttpRequest):
 def contact(request: HttpRequest):
     return render(request, 'manager/contact.html')
 
-def explore(request: HttpRequest):
-    top_packages = Package.objects.filter(public=True)[:5]
-    user_packages = getUserPackages(request.user)
+def explore(request: HttpRequest, page=1):
+    page = int(page)
+
+    PAGE_SIZE = 10
+    
+    start_index = (page-1) * PAGE_SIZE
+    end_index = page * PAGE_SIZE
+
+    num_packages = Package.objects.filter(public=True).count()
+    if start_index > num_packages:
+        last_page = (num_packages // PAGE_SIZE) +1
+        return redirect('manager:explore', last_page)
+
+    top_packages = Package.objects.filter(public=True)[start_index:end_index]
+    user_packages = getUserPackages(request.user)[:10]
 
     context_dict = {
         'top_packages':top_packages,

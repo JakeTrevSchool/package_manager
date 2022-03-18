@@ -29,8 +29,3 @@ tr {
 tr:nth-child(even) {
   background-color: rgb(204, 204, 204);
 }
-
-.header_item {
-  padding: 10px;
-  margin: 10px;
-}
