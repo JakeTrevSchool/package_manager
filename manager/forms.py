@@ -15,9 +15,11 @@ class PackageForm(forms.ModelForm):
 
 class VersionForm(forms.ModelForm):
     new_current = forms.BooleanField()
+    code = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+
     class Meta:
         model = Version
-        fields = ('version_ID', 'code', 'dependencies', 'comment')
+        fields = ('version_ID', 'dependencies', 'comment')
 
 class CommentForm(forms.ModelForm):
     class Meta:
