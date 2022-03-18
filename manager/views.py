@@ -1,5 +1,3 @@
-from mmap import PAGESIZE
-from tkinter import Pack
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
@@ -28,7 +26,7 @@ def contact(request: HttpRequest):
 def explore(request: HttpRequest, page=1):
     page = int(page)
 
-    PAGE_SIZE = 1
+    PAGE_SIZE = 10
     
     start_index = (page-1) * PAGE_SIZE
     end_index = page * PAGE_SIZE
