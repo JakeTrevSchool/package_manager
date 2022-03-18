@@ -28,22 +28,36 @@ def contact(request: HttpRequest):
 def explore(request: HttpRequest, page=1):
     page = int(page)
 
-    PAGE_SIZE = 10
+    PAGE_SIZE = 1
     
     start_index = (page-1) * PAGE_SIZE
     end_index = page * PAGE_SIZE
 
     num_packages = Package.objects.filter(public=True).count()
+    
+    num_pages = (num_packages // PAGE_SIZE) + 1
+    
     if start_index > num_packages:
-        last_page = (num_packages // PAGE_SIZE) +1
-        return redirect('manager:explore', last_page)
+        return redirect('manager:explore', num_pages)
+
+    packages_before = page != 1
+    packages_after = page != num_pages
 
     top_packages = Package.objects.filter(public=True)[start_index:end_index]
     user_packages = getUserPackages(request.user)[:10]
 
+    if page == 1:
+        pages = [page, page+1, page +2][:num_pages]
+    else :
+        pages = [page-1, page, page +1][:num_pages]
+
     context_dict = {
         'top_packages':top_packages,
         'user_packages':user_packages,
+        'packages_before': packages_before,
+        'packages_after': packages_after,
+        'page':page,
+        'pages':pages,
     }
     return render(request, 'manager/explore.html', context=context_dict)
 
