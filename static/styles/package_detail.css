@@ -1,0 +1,47 @@
+.repo-list {
+    position: relative;
+}
+
+ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+}
+
+.mr-3 {
+    margin-right: 16px !important;
+}
+
+p {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.mb-1 {
+    margin-bottom: 4px;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.py-4 {
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+
+.text-small {
+    font-size: 12px;
+}
+
+.mt-n1 {
+    margin-top: -4px;
+}
+
+.flex-auto {
+    flex: auto;
+}
