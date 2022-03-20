@@ -152,3 +152,10 @@ def profile(request, profile_name:str):
 
     context_dict= {'profile':profile, 'user_packages':user_packages}
     return render(request, 'manager/profile.html', context=context_dict)
+
+def custom_page_not_found_view(request, exception):
+    response = render(request, 'manager/404.html', {})
+    response.status_code = 404
+    return response
+
+
