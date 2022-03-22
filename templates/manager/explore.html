@@ -4,147 +4,133 @@
 <!--  -->
 {% block header_block %}
 <link
-        rel="stylesheet"
-        type="text/css"
-        href="{% static 'styles/explore.css' %}"
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'styles/explore.css' %}"
 />
 <link
-        rel="stylesheet"
-        type="text/css"
-        href="{% static 'styles/package_detail.css' %}"
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'styles/package_detail.css' %}"
 />
 <link
-        rel="stylesheet"
-        type="text/css"
-        href="{% static 'styles/tables.css' %}"
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'styles/tables.css' %}"
 />
 {% endblock %}
 <!--  -->
 {% block body_block %}
 <div id="static">
-    <div class="segment" id="user_packages">
-        <h2>My packages</h2>
-        {% if user.is_authenticated %} {% if user_packages%}
-        <table class="table table-hover">
-            <thead>
-            <tr>
-                <th>Package name</th>
-                <th>Version</th>
-                <th>Author</th>
-                <th>Downloads</th>
-                <th>Views</th>
-                <th>Link</th>
-            </tr>
-            </thead>
-            {% for package in user_packages %}
-            <tr>
-                <td>
-                    <a href="{% url 'manager:package' package.package_name %}"
-                    >{{ package.package_name }}</a
-                    >
-                </td>
-                <td>
-                    <a href="{% url 'manager:package' package.package_name %}"
-                    >{{ package.version }}</a
-                    >
-                </td>
-                <td>
-                    <a href="{% url 'manager:package' package.package_name %}"
-                    >{{ package.author }}</a
-                    >
-                </td>
-                <td>
-                    <a href="{% url 'manager:package' package.package_name %}"
-                    >{{ package.downloads }}</a
-                    >
-                </td>
-                <td>
-                    <a href="{% url 'manager:package' package.package_name %}"
-                    >{{ package.views }}</a
-                    >
-                </td>
-                <td>
-                    <a href="{% url 'manager:package' package.package_name %}">x</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
-        {% else %}
-        <h3>you havent uploaded any packages yet</h3>
-        {% endif %}
-        <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
-        {% else %}
-        <strong>You need to log in to see your own package.</strong>
-        {% endif %}
-    </div>
+  <div class="segment" id="user_packages">
+    <h2>My packages</h2>
+    {% if user.is_authenticated %} {% if user_packages%}
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Package name</th>
+          <th>Version</th>
+          <th>Author</th>
+          <th>Downloads</th>
+          <th>Views</th>
+          <th>Link</th>
+        </tr>
+      </thead>
+      {% for package in user_packages %}
+      <tr>
+        <td>
+          <a href="{% url 'manager:package' package.package_name %}"
+            >{{ package.package_name }}</a
+          >
+        </td>
+        <td>
+          <a href="{% url 'manager:package' package.package_name %}"
+            >{{ package.version }}</a
+          >
+        </td>
+        <td>
+          <a href="{% url 'manager:package' package.package_name %}"
+            >{{ package.author }}</a
+          >
+        </td>
+        <td>
+          <a href="{% url 'manager:package' package.package_name %}"
+            >{{ package.downloads }}</a
+          >
+        </td>
+        <td>
+          <a href="{% url 'manager:package' package.package_name %}"
+            >{{ package.views }}</a
+          >
+        </td>
+        <td>
+          <a href="{% url 'manager:package' package.package_name %}">x</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <h3>you havent uploaded any packages yet</h3>
+    {% endif %}
+    <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
+    {% else %}
+    <strong>You need to log in to see your own package.</strong>
+    {% endif %}
+  </div>
 
+  <div id="top_5packages">
+    <h3>Top Packages</h3>
+    {% if top_packages %}
+    <ul class="repo-list">
+      {% for package in top_packages %}
+      <li class="d-flex py-4">
+        <div class="mt-n1 flex-auto">
+          <div class="d-flex">
+            <div class="f4 text-normal">
+              <a href="">{{ package.package_name }}</a>
+            </div>
+          </div>
 
-    <div id="top_5packages">
-        <h3>Most likes Packages</h3>
-        <ul class="repo-list">
-            {% if top_packages %}
-            {% for package in top_packages %}
-            <li class="d-flex py-4">
-                <div class="mt-n1 flex-auto">
+          <p class="mb-1">commit</p>
 
-                    <div class="d-flex">
-                        <div class="f4 text-normal">
-                            <a href="">{{ package.package_name }}</a>
-                        </div>
-                    </div>
+          <div class="d-flex flex-wrap text-small color-fg-muted">
+            <div class="mr-3">{{ package.current_version }}</div>
 
-                    <p class="mb-1"> commit </p>
+            <div class="mr-3">{{ package.author }}</div>
 
-                    <div class="d-flex flex-wrap text-small color-fg-muted">
+            <div class="mr-3">{{ package.download }}</div>
 
-                        <div class="mr-3">
-                            {{ package.current_version }}
-                        </div>
-
-                        <div class="mr-3">
-                            {{ package.author }}
-                        </div>
-
-                        <div class="mr-3">
-                            {{ package.download }}
-                        </div>
-
-                        <div class="mr-3">
-                            {{ package.views }}
-                        </div>
-
-                    </div>
-
-                </div>
-            </li>
-
-            {% endfor %}
-            {% endif %}
-        </ul>
-        <!-- page controls -->
-        <div class="page">
-            {% if packages_before %}
-            <a href="{% url 'manager:explore' page|add:'-1' %}">Previous</a>
-            {% else %}
-            <span class="previous_page disabled">Previous</span>
-            {% endif %}
-            <!--  -->
-            {% for page_link in pages %} {% if page_link != page %}
-            <a href="{% url 'manager:explore' page_link %}">{{ page_link }}</a>
-            {% else %}
-            <strong>{{ page_link }}</strong>
-            {% endif %} {% endfor %}
-            <!--  -->
-            {% if packages_after %}
-            <a href="{% url 'manager:explore' page|add:'1' %}">Next</a>
-            {% else %}
-            <span class="next_page disabled">Next</span>
-            {% endif %}
+            <div class="mr-3">{{ package.views }}</div>
+          </div>
         </div>
-        {% else %}
-        <strong>There are no packages present.</strong>
-        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    <!-- page controls -->
+    <div class="page">
+      {% if packages_before %}
+      <a href="{% url 'manager:explore' page|add:'-1' %}">Previous</a>
+      {% else %}
+      <span class="previous_page disabled">Previous</span>
+      {% endif %}
+      <!--  -->
+      {% for page_link in pages %} {% if page_link != page %}
+      <a href="{% url 'manager:explore' page_link %}">{{ page_link }}</a>
+      {% else %}
+      <strong>{{ page_link }}</strong>
+      {% endif %} {% endfor %}
+
+      <!--  -->
+      {% if packages_after %}
+      <a href="{% url 'manager:explore' page|add:'1' %}">Next</a>
+      {% else %}
+      <span class="next_page disabled">Next</span>
+      {% endif %}
     </div>
+    {% else %}
+    <strong>There are no packages present.</strong>
+    {% endif %}
+  </div>
 </div>
 
 {% endblock %}
