@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+{% extends 'manager/base.html' %}
+{% load staticfiles %}
+
+{% block body_block %}
+<h1>Not Found</h1>
+<div>The given page has not been found. Try looking for any misspellings in the address bar
+	 or go back <a href="{% url 'manager:index' %}">Home</a>. 
+
+{% endblock %}

@@ -41,11 +41,13 @@
           href=" {% url 'auth_logout' %}?next={% url 'manager:index' %}"
           ><h1>Log Out</h1></a
         >
-        {% if user.userprofile.avatar == "" %}
-        <img id="avatar" src="{% static 'default_avatar.png' %}" />
-        {% else %}
-        <img id="avatar" src="{{ user.userprofile.avatar.url }}" alt="avatar" />
-        {% endif %}
+		<a class="link" href="{% url 'manager:profile' user.username %}">
+			{% if user.userprofile.avatar == "" %}
+			<img id="avatar" src="{% static 'default_avatar.png' %}" />
+			{% else %}
+			<img id="avatar" src="{{ user.userprofile.avatar.url }}" alt="avatar" />
+			{% endif %}
+		</a>
       </div>
       {% else %}
       <a class="header_item link" href="{% url 'auth_login' %}"

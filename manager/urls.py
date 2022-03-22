@@ -13,5 +13,6 @@ urlpatterns = [
     path('package/<slug:package_name>', views.package, name='package'),
     path('package/<slug:package_name>/add_version', views.add_version, name="add_version"),
     path('contact/', views.contact, name='contact'),
-    path('accounts/register_profile', views.register_profile, name="register_profile")
+    path('accounts/register_profile', views.register_profile, name="register_profile"),
+    path('profile/<slug:profile_name>', views.profile, name="profile"),
 ]
