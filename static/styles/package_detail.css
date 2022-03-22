@@ -1,47 +1,45 @@
-.repo-list {
-    position: relative;
+.package_list {
+  position: relative;
+  background-color: white;
+  border-radius: 5px;
+  margin-bottom: 10px;
 }
 
-ul {
-    display: block;
-    list-style-type: disc;
-    margin-block-start: 1em;
-    margin-block-end: 1em;
-    margin-inline-start: 0px;
-    margin-inline-end: 0px;
-    padding-inline-start: 40px;
+.package {
+  display: flex;
+  flex-direction: column;
+
+  padding: 12px;
+  background-color: white;
+  border-bottom: 1px grey solid;
+  transition: all 1s;
 }
 
-.mr-3 {
-    margin-right: 16px !important;
+.package:hover {
+  border-radius: 5px;
+  transform: scale(110%);
+  box-shadow: 0 3px 1px 1px rgba(0, 0, 0, 10%);
 }
 
-p {
-    margin-top: 0;
-    margin-bottom: 10px;
+.package_link {
+  color: inherit;
+  text-decoration: inherit;
 }
 
-.mb-1 {
-    margin-bottom: 4px;
+.details {
+  display: flex;
+  font-size: 12px;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.d-flex {
-    display: flex;
+.detail {
+  margin-right: 16px;
 }
 
-.py-4 {
-    padding-top: 24px;
-    padding-bottom: 24px;
-}
-
-.text-small {
-    font-size: 12px;
-}
-
-.mt-n1 {
-    margin-top: -4px;
-}
-
-.flex-auto {
-    flex: auto;
+.page_controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
