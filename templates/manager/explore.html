@@ -11,6 +11,11 @@
 <link
   rel="stylesheet"
   type="text/css"
+  href="{% static 'styles/package_detail.css' %}"
+/>
+<link
+  rel="stylesheet"
+  type="text/css"
   href="{% static 'styles/tables.css' %}"
 />
 {% endblock %}
@@ -73,58 +78,59 @@
     {% endif %}
   </div>
 
-  <div id="static">
-    <div id="top_5packages">
-      <h3>Most likes Packages</h3>
-      {% if top_packages %}
+  <div id="top_5packages">
+    <h3>Top Packages</h3>
+    {% if top_packages %}
+    <ul class="repo-list">
+      {% for package in top_packages %}
+      <li class="d-flex py-4">
+        <div class="mt-n1 flex-auto">
+          <div class="d-flex">
+            <div class="f4 text-normal">
+              <a href="">{{ package.package_name }}</a>
+            </div>
+          </div>
 
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>Package name</th>
-            <th>Version</th>
-            <th>Author</th>
-            <th>Downloads</th>
-            <th>Views</th>
-            <th>Detail</th>
-          </tr>
-        </thead>
-        {% for package in top_packages %}
+          <p class="mb-1">commit</p>
+
+          <div class="d-flex flex-wrap text-small color-fg-muted">
+            <div class="mr-3">{{ package.current_version }}</div>
+
+            <div class="mr-3">{{ package.author }}</div>
+
+            <div class="mr-3">{{ package.download }}</div>
+
+            <div class="mr-3">{{ package.views }}</div>
+          </div>
         </div>
-        <tr>
-          <td>{{ package.package_name }}</td>
-          <td>{{ package.current_version }}</td>
-          <td>{{ package.author }}</td>
-          <td>{{ package.download }}</td>
-          <td>{{ package.views }}</td>
-          <td><a href="">check</a></td>
-        </tr>
-        {% endfor %}
-      </table>
-      <!-- page controls -->
-      <div class="page">
-        {% if packages_before %}
-        <a href="{% url 'manager:explore' page|add:'-1' %}">Previous</a>
-        {% else %}
-        <span class="previous_page disabled">Previous</span>
-        {% endif %}
-        <!--  -->
-        {% for page_link in pages %} {% if page_link != page %}
-        <a href="{% url 'manager:explore' page_link %}">{{ page_link }}</a>
-        {% else %}
-        <strong>{{ page_link }}</strong>
-        {% endif %} {% endfor %}
-        <!--  -->
-        {% if packages_after %}
-        <a href="{% url 'manager:explore' page|add:'1' %}">Next</a>
-        {% else %}
-        <span class="next_page disabled">Next</span>
-        {% endif %}
-      </div>
+      </li>
+      {% endfor %}
+    </ul>
+    <!-- page controls -->
+    <div class="page">
+      {% if packages_before %}
+      <a href="{% url 'manager:explore' page|add:'-1' %}">Previous</a>
       {% else %}
-      <strong>There are no packages present.</strong>
+      <span class="previous_page disabled">Previous</span>
+      {% endif %}
+      <!--  -->
+      {% for page_link in pages %} {% if page_link != page %}
+      <a href="{% url 'manager:explore' page_link %}">{{ page_link }}</a>
+      {% else %}
+      <strong>{{ page_link }}</strong>
+      {% endif %} {% endfor %}
+
+      <!--  -->
+      {% if packages_after %}
+      <a href="{% url 'manager:explore' page|add:'1' %}">Next</a>
+      {% else %}
+      <span class="next_page disabled">Next</span>
       {% endif %}
     </div>
+    {% else %}
+    <strong>There are no packages present.</strong>
+    {% endif %}
   </div>
 </div>
+
 {% endblock %}
