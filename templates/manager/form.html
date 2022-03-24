@@ -11,11 +11,7 @@
 {% endblock %} {% block body_block %}
 
 <div id="static">
-  <form
-    method="post"
-    action="{% url 'manager:add_package' %}"
-    enctype="multipart/form-data"
-  >
+  <form method="post" action="{{ action }}" enctype="multipart/form-data">
     {% csrf_token %} {{ form.as_p }}
     <input type="submit" class="button" />
   </form>

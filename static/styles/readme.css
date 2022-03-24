@@ -1,0 +1,11 @@
+#readme {
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: var(--shadow);
+  padding: 10px;
+  overflow: hidden;
+}
+
+.readme li {
+  margin-left: 10px;
+}

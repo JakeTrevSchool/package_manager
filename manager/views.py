@@ -1,10 +1,10 @@
-import re
-from django.http import HttpResponse, HttpRequest
+from struct import pack
+from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
-from manager.forms import UserProfileForm, PackageForm, VersionForm, CommentForm
+from manager.forms import ReadmeForm, UserProfileForm, PackageForm, VersionForm, CommentForm
 from manager.models import UserProfile, Package, Version
 # Create your views here.
 PAGE_SIZE = 5
@@ -30,7 +30,6 @@ def contact(request: HttpRequest):
 def explore(request: HttpRequest, page=1):
     page = int(page)
 
-    
     # get user packages
     user_packages = []
     if (request.user.is_authenticated):
@@ -69,23 +68,64 @@ def explore(request: HttpRequest, page=1):
 def package(request: HttpRequest, package_name: str):
     package = get_object_or_404(Package, package_name=package_name)
 
+    readme_file = package.readme
+    readme = ""
+    if readme_file:
+        with readme_file.open('r') as f:
+            readme = f.read()
+    else:
+        readme = "# This package does not have a readme"
     # check if user has admin priveliges
-    # this could be modified in the future to allow for collaborators.
-    user_is_owner = False
-    if(request.user.is_authenticated):
-        print(package.author)
-        print(UserProfile.objects.get(user=request.user))
-        user_is_owner = (package.author == UserProfile.objects.get(user=request.user))
+    # this could be modified in the future to allow for collaborators
 
     # get comments
     comments = [] 
 
-    context_dict = {'package':package, 'user_is_owner':user_is_owner}
+    user_is_owner = is_owner(package, request.user)
+
+    package_versions = Version.objects.filter(package=package)
+    num_versions = package_versions.count()
+
+    code_content = "No releases yet..."
+    try:
+        cur_version:Version = Version.objects.get(version_ID=package.current_version)
+    except Version.DoesNotExist:
+        cur_version = None
+
+    if(cur_version):
+        with cur_version.code_file.open('r') as f:
+            code_content = f.read()
+
+    context_dict = {
+        'package':package, 
+        'user_is_owner':user_is_owner,
+        'readme': readme,
+        'version_count':num_versions,
+        'code_content': code_content,
+    }
     return render(request, 'manager/package.html', context=context_dict)
 
+def edit_readme(request:HttpRequest, package_name):
+    action = request.get_full_path()
+    package: Package = get_object_or_404(Package, package_name=package_name)
+
+    if not is_owner(package, request.user):
+        return redirect(reverse('manager:package', package_name))
+
+    if request.method == 'POST':
+        form = ReadmeForm(request.POST, request.FILES, instance=package)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('manager:index'))
+        else:
+            print(form.errors)
+
+    form = ReadmeForm(instance=package)
+    return render(request, 'manager/form.html', {'form':form, 'action':action})
 
 @login_required
 def add_package(request: HttpRequest):
+    action = request.get_full_path()
     form = PackageForm()
 
     if request.method == 'POST':
@@ -97,35 +137,37 @@ def add_package(request: HttpRequest):
             package.save()
             return redirect('manager:index')
         else:
-            return redirect('manager:explore')
             print(form.errors)
 
-    return render(request, 'manager/add_package.html', {'form':form})
+    return render(request, 'manager/form.html', {'form':form, 'action':action})
 
-
-def handle_file_upload(f, destination: str):
-    with open(destination, "wb+") as target:
-        for chunk in f.chunks():
-            target.write(chunk)
-    
 @login_required
 def add_version(request: HttpRequest, package_name:str):
+    action = request.get_full_path()
     package = get_object_or_404(Package, package_name=package_name)
+    
+    if not is_owner(package, request.user):
+        return redirect(reverse('manager:package', package_name))
+    
     form = VersionForm()
 
     if request.method == 'POST':
         form = VersionForm(request.POST, request.FILES)
         if form.is_valid():
+            new_current = form.data['new_current']
+            print(new_current)
+            if (new_current):
+                redirect('manager:explore')
+
             version: Version = form.save(commit=False)
             # add package to version.
             version.package = package
             version.save()
-
             return redirect('manager:index')
         else:
             print (form.errors)
 
-    return render(request, 'manager/add_version.html', {'form':form, 'package':package})
+    return render(request, 'manager/form.html', {'form':form, 'action':action, 'package':package})
 
 @login_required
 def register_profile(request: HttpRequest):
@@ -145,7 +187,7 @@ def register_profile(request: HttpRequest):
     context_dict = {'form': form}
     return render(request, 'registration/register_profile.html', context_dict)
 
-def profile(request, profile_name:str):
+def profile(request:HttpRequest, profile_name:str):
     user = get_object_or_404(User, username=profile_name)
     profile = get_object_or_404(UserProfile, user=user)
 
@@ -154,9 +196,15 @@ def profile(request, profile_name:str):
     context_dict= {'profile':profile, 'user_packages':user_packages}
     return render(request, 'manager/profile.html', context=context_dict)
 
+
+
 def custom_page_not_found_view(request, exception):
     response = render(request, 'manager/404.html', {})
     response.status_code = 404
     return response
 
-
+def is_owner(package:Package, user:User):
+    is_owner = False
+    if(user.is_authenticated):
+        is_owner = (package.author == UserProfile.objects.get(user=user))
+    return is_owner

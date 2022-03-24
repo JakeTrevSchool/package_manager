@@ -12,6 +12,7 @@ urlpatterns = [
     path('add_package', views.add_package, name="add_package"),
     path('package/<slug:package_name>', views.package, name='package'),
     path('package/<slug:package_name>/add_version', views.add_version, name="add_version"),
+    path('package/<slug:package_name>/readme', views.edit_readme, name="edit_readme"),
     path('contact/', views.contact, name='contact'),
     path('accounts/register_profile', views.register_profile, name="register_profile"),
     path('profile/<slug:profile_name>', views.profile, name="profile"),
