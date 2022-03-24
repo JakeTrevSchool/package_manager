@@ -1,0 +1,26 @@
+.readme {
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: var(--shadow);
+  margin: 10px 0;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.readme_title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 5px;
+  box-shadow: var(--shadow);
+  background-color: lavender;
+}
+.button_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.readme li {
+  margin-left: 10px;
+}
