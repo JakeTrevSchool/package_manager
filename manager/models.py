@@ -16,12 +16,12 @@ class Package(models.Model):
     tags = models.TextField(blank=True)
 
     package_name = models.CharField(max_length=120, unique=True)
-    current_version = models.TextField(default="")
+    current_version = models.TextField(default="0.0.0")
     
     def getUploadDir(instance, filename):
         return f"packages/{instance.package_name}/{filename}"
     
-    readme = models.FileField(upload_to=getUploadDir, null=True)
+    readme = models.FileField(upload_to=getUploadDir)
     
     downloads = models.IntegerField(default=0)
     views = models.IntegerField(default=0)

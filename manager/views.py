@@ -1,3 +1,4 @@
+import re
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
@@ -6,6 +7,9 @@ from django.urls import reverse
 from manager.forms import UserProfileForm, PackageForm, VersionForm, CommentForm
 from manager.models import UserProfile, Package, Version
 # Create your views here.
+PAGE_SIZE = 5
+
+
 
 # a helper method
 def getUserPackages(user: User):
@@ -26,7 +30,6 @@ def contact(request: HttpRequest):
 def explore(request: HttpRequest, page=1):
     page = int(page)
 
-    PAGE_SIZE = 10
     
     # get user packages
     user_packages = []
@@ -69,6 +72,8 @@ def package(request: HttpRequest, package_name: str):
     # this could be modified in the future to allow for collaborators.
     user_is_owner = False
     if(request.user.is_authenticated):
+        print(package.author)
+        print(UserProfile.objects.get(user=request.user))
         user_is_owner = (package.author == UserProfile.objects.get(user=request.user))
 
     # get comments
@@ -83,18 +88,15 @@ def add_package(request: HttpRequest):
     form = PackageForm()
 
     if request.method == 'POST':
-        form = PackageForm(request.POST)
-
+        form = PackageForm(request.POST, request.FILES)
         if form.is_valid():
             package = form.save(commit=False)
             package.author = UserProfile.objects.get(user=request.user)
 
-            package.downloads = 0
-            package.views = 0
-            package.current_version = "0.0.0"
             package.save()
             return redirect('manager:index')
         else:
+            return redirect('manager:explore')
             print(form.errors)
 
     return render(request, 'manager/add_package.html', {'form':form})
@@ -146,7 +148,7 @@ def profile(request, profile_name:str):
     user = get_object_or_404(User, username=profile_name)
     profile = get_object_or_404(UserProfile, user=user)
 
-    user_packages = getUserPackages(user)
+    user_packages = getUserPackages(user)[:PAGE_SIZE]
 
     context_dict= {'profile':profile, 'user_packages':user_packages}
     return render(request, 'manager/profile.html', context=context_dict)
