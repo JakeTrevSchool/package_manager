@@ -15,10 +15,13 @@
   margin: 10px;
   border-radius: 5px;
   background-color: white;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.384);
+  box-shadow: var(--shadow);
 }
 
-#my_package {
-  margin: 10px;
-  width: 50%;
+.title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 5px;
+  border-bottom: solid 1px black;
 }

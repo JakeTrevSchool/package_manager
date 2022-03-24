@@ -22,7 +22,10 @@
 <!--  -->
 {% block body_block %}
 <div class="segment" id="user_packages">
-  <h2>My packages</h2>
+  <div class="title">
+    <h2>My packages</h2>
+    <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
+  </div>
   {% if user.is_authenticated %} {% if user_packages%}
   <ul class="package_list">
     {% for package in user_packages %}
@@ -52,15 +55,16 @@
   </ul>
   {% else %}
   <h3>you havent uploaded any packages yet</h3>
-  {% endif %}
-  <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
-  {% else %}
+  {% endif %} {% else %}
   <strong>You need to log in to see your own package.</strong>
   {% endif %}
 </div>
 
+<!-- top packages -->
 <div class="segment" id="top_5packages">
-  <h2>Top Packages</h2>
+  <div class="title">
+    <h2>Top Packages</h2>
+  </div>
   {% if top_packages %}
   <ul class="package_list">
     {% for package in top_packages %}

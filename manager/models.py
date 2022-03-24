@@ -17,7 +17,12 @@ class Package(models.Model):
 
     package_name = models.CharField(max_length=120, unique=True)
     current_version = models.TextField(default="")
-
+    
+    def getUploadDir(instance, filename):
+        return f"packages/{instance.package_name}/{filename}"
+    
+    readme = models.FileField(upload_to=getUploadDir, null=True)
+    
     downloads = models.IntegerField(default=0)
     views = models.IntegerField(default=0)
     public = models.BooleanField(default=0)
@@ -25,17 +30,16 @@ class Package(models.Model):
     def __str__(self) -> str:
         return self.package_name
 
-class File(models.Model):
-    readme = models.BooleanField(default=False)
-    code_file = models.FileField()
 
 class Version(models.Model):
+    def getUploadDir(instance, filename):
+        return f"packages/{instance.package.package_name}/{instance.version_ID}/{filename}"
+
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     version_ID = models.CharField(max_length=20, unique=True)
     
 
-    
-    code_files = models.ManyToManyField(File)
+    code_file = models.FileField(upload_to=getUploadDir)
 
     comment = models.TextField(default="")
     dependencies = models.TextField(default="")

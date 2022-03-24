@@ -11,15 +11,13 @@ class UserProfileForm(forms.ModelForm):
 class PackageForm(forms.ModelForm):
     class Meta:
         model = Package
-        fields = ('package_name', 'tags', 'public')
+        fields = ('package_name', 'tags', 'public', 'readme')
 
 class VersionForm(forms.ModelForm):
     new_current = forms.BooleanField()
-    code = forms.FileField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
-
     class Meta:
         model = Version
-        fields = ('version_ID', 'dependencies', 'comment')
+        fields = ('version_ID', 'dependencies', 'comment', "code_file")
 
 class CommentForm(forms.ModelForm):
     class Meta:

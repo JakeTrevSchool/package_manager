@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
 from manager.forms import UserProfileForm, PackageForm, VersionForm, CommentForm
-from manager.models import UserProfile, Package, Version, File
+from manager.models import UserProfile, Package, Version
 # Create your views here.
 
 # a helper method
@@ -28,11 +28,15 @@ def explore(request: HttpRequest, page=1):
 
     PAGE_SIZE = 10
     
+    # get user packages
+    user_packages = []
+    if (request.user.is_authenticated):
+        user_packages = getUserPackages(request.user)[:PAGE_SIZE]
+
     start_index = (page-1) * PAGE_SIZE
     end_index = page * PAGE_SIZE
 
     num_packages = Package.objects.filter(public=True).count()
-    
     num_pages = (num_packages // PAGE_SIZE) + 1
     
     if start_index > num_packages:
@@ -42,7 +46,6 @@ def explore(request: HttpRequest, page=1):
     packages_after = page != num_pages
 
     top_packages = Package.objects.filter(public=True)[start_index:end_index]
-    user_packages = getUserPackages(request.user)[:10]
 
     if page == 1:
         pages = [page, page+1, page +2][:num_pages]
@@ -61,7 +64,17 @@ def explore(request: HttpRequest, page=1):
 
 def package(request: HttpRequest, package_name: str):
     package = get_object_or_404(Package, package_name=package_name)
-    context_dict = {'package':package}
+
+    # check if user has admin priveliges
+    # this could be modified in the future to allow for collaborators.
+    user_is_owner = False
+    if(request.user.is_authenticated):
+        user_is_owner = (package.author == UserProfile.objects.get(user=request.user))
+
+    # get comments
+    comments = [] 
+
+    context_dict = {'package':package, 'user_is_owner':user_is_owner}
     return render(request, 'manager/package.html', context=context_dict)
 
 
@@ -97,27 +110,14 @@ def add_version(request: HttpRequest, package_name:str):
     package = get_object_or_404(Package, package_name=package_name)
     form = VersionForm()
 
-    print("the view is working")
     if request.method == 'POST':
-        print("post")
         form = VersionForm(request.POST, request.FILES)
         if form.is_valid():
-            print("form validated")
             version: Version = form.save(commit=False)
+            # add package to version.
             version.package = package
-
-            code_files = request.FILES.values()
-            
-            # compute the destination
-            version_id = version.version_ID
-            dest = f"packages/{package_name}/{version_id}/"
-
-            for f in code_files:
-                handle_file_upload(f, dest + f.name)
-                new_f = File(file=f).save()
-                version.code_files.add(new_f)
-                
             version.save()
+
             return redirect('manager:index')
         else:
             print (form.errors)
