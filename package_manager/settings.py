@@ -146,6 +146,10 @@ LOGIN_URL = 'auth_login'
 
 MARKDOWNIFY = {
     "default": {
+        "MARKDOWN_EXTENSIONS": [
+            'markdown.extensions.fenced_code',
+            'markdown.extensions.extra',
+        ],
         "WHITELIST_TAGS": [
             'a',
             'abbr',

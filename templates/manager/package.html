@@ -41,21 +41,34 @@
   {% endif %}
 </div>
 
-
-<div class="readme">
-  <div class="readme_title">
-    <h1>readme</h1>
-    {% if user_is_owner %}
-    <div class="button_wrapper">
-      <a class="button" href="{% url 'manager:edit_readme' package.package_name %}">edit readme</a>
-    </div>
-    {% endif %}
+<div class="section_title">
+  <h1>readme</h1>
+  {% if user_is_owner %}
+  <div class="wrapper">
+    <a class="button" href="{% url 'manager:edit_readme' package.package_name %}">edit readme</a>
   </div>
-  {{ readme|markdownify }}
+  {% endif %}
 </div>
-  
-<div id="show_file">
-  <div>{{ code_content }}</div>
+
+<div id="readme">
+  <div class="scrollbox">
+    {{ readme|markdownify }}
+  </div>
+</div>
+
+<div class="section_title">
+  <h1>Code</h1>
+  <h3 class="wrapper">version: {{ version_count }}</h3>
+</div>
+
+<div id="code">
+  <div class="scrollbox">
+    <pre>
+      <code>
+        <div>{{ code_content }}</div>
+      </code>
+    </pre>
+  </div>
 </div>
 
 </div>

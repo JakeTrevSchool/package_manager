@@ -15,7 +15,7 @@ class PackageForm(forms.ModelForm):
         fields = ('package_name', 'tags', 'public', 'readme')
 
 class VersionForm(forms.ModelForm):
-    new_current = forms.BooleanField(required=False)
+    new_current = forms.BooleanField(required=False, initial=False)
     class Meta:
         model = Version
         fields = ('version_ID', 'dependencies', 'comment', "code_file")
