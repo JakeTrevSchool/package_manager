@@ -48,7 +48,8 @@ def explore(request: HttpRequest, page=1):
     packages_before = page != 1
     packages_after = page != num_pages
 
-    top_packages = Package.objects.filter(public=True)[start_index:end_index]
+    top_packages = Package.objects.order_by('-views')
+    top_packages = top_packages.filter(public=True)[start_index:end_index]
 
     if page == 1:
         pages = [page, page+1, page +2][:num_pages]
