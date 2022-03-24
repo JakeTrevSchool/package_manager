@@ -21,99 +21,97 @@
 {% endblock %}
 <!--  -->
 {% block body_block %}
-<div id="static">
-  <div class="segment" id="user_packages">
-    <h2>My packages</h2>
-    {% if user.is_authenticated %} {% if user_packages%}
-    <ul class="package_list">
-      {% for package in user_packages %}
-      <li class="package">
-        <a
-          href="{% url 'manager:package' package.package_name %}"
-          class="package_link"
-        >
-          <h2>{{ package.package_name }}</h2>
+<div class="segment" id="user_packages">
+  <h2>My packages</h2>
+  {% if user.is_authenticated %} {% if user_packages%}
+  <ul class="package_list">
+    {% for package in user_packages %}
+    <li class="package">
+      <a
+        href="{% url 'manager:package' package.package_name %}"
+        class="package_link"
+      >
+        <h2>{{ package.package_name }}</h2>
 
-          <p>description</p>
-          <!-- what is this meant to be? -->
+        <p>description</p>
+        <!-- what is this meant to be? -->
 
-          <div class="details">
-            <div class="detail">by {{ package.author }}</div>
+        <div class="details">
+          <div class="detail">by {{ package.author }}</div>
 
-            <div class="detail">version {{ package.current_version }}</div>
-          </div>
-          <div class="details">
-            <div class="detail">{{ package.downloads }} downloads</div>
+          <div class="detail">version {{ package.current_version }}</div>
+        </div>
+        <div class="details">
+          <div class="detail">{{ package.downloads }} downloads</div>
 
-            <div class="detail">{{ package.views }} views</div>
-          </div>
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
+          <div class="detail">{{ package.views }} views</div>
+        </div>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <h3>you havent uploaded any packages yet</h3>
+  {% endif %}
+  <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
+  {% else %}
+  <strong>You need to log in to see your own package.</strong>
+  {% endif %}
+</div>
+
+<div class="segment" id="top_5packages">
+  <h2>Top Packages</h2>
+  {% if top_packages %}
+  <ul class="package_list">
+    {% for package in top_packages %}
+    <li class="package">
+      <a
+        href="{% url 'manager:package' package.package_name %}"
+        class="package_link"
+      >
+        <h2>{{ package.package_name }}</h2>
+
+        <p>description</p>
+        <!-- what is this meant to be? -->
+
+        <div class="details">
+          <div class="detail">by {{ package.author }}</div>
+
+          <div class="detail">version {{ package.current_version }}</div>
+        </div>
+        <div class="details">
+          <div class="detail">{{ package.downloads }} downloads</div>
+
+          <div class="detail">{{ package.views }} views</div>
+        </div>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  <!-- page controls -->
+  <div class="page_controls">
+    {% if packages_before %}
+    <a href="{% url 'manager:explore' page|add:'-1' %}">Previous</a>
     {% else %}
-    <h3>you havent uploaded any packages yet</h3>
+    <span class="previous_page disabled">Previous</span>
     {% endif %}
-    <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
+    <!--  -->
+    {% for page_link in pages %} {% if page_link != page %}
+    <a href="{% url 'manager:explore' page_link %}">{{ page_link }}</a>
     {% else %}
-    <strong>You need to log in to see your own package.</strong>
-    {% endif %}
-  </div>
+    <strong>{{ page_link }}</strong>
+    {% endif %} {% endfor %}
 
-  <div class="segment" id="top_5packages">
-    <h3>Top Packages</h3>
-    {% if top_packages %}
-    <ul class="package_list">
-      {% for package in top_packages %}
-      <li class="package">
-        <a
-          href="{% url 'manager:package' package.package_name %}"
-          class="package_link"
-        >
-          <h2>{{ package.package_name }}</h2>
-
-          <p>description</p>
-          <!-- what is this meant to be? -->
-
-          <div class="details">
-            <div class="detail">by {{ package.author }}</div>
-
-            <div class="detail">version {{ package.current_version }}</div>
-          </div>
-          <div class="details">
-            <div class="detail">{{ package.downloads }} downloads</div>
-
-            <div class="detail">{{ package.views }} views</div>
-          </div>
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
-    <!-- page controls -->
-    <div class="page_controls">
-      {% if packages_before %}
-      <a href="{% url 'manager:explore' page|add:'-1' %}">Previous</a>
-      {% else %}
-      <span class="previous_page disabled">Previous</span>
-      {% endif %}
-      <!--  -->
-      {% for page_link in pages %} {% if page_link != page %}
-      <a href="{% url 'manager:explore' page_link %}">{{ page_link }}</a>
-      {% else %}
-      <strong>{{ page_link }}</strong>
-      {% endif %} {% endfor %}
-
-      <!--  -->
-      {% if packages_after %}
-      <a href="{% url 'manager:explore' page|add:'1' %}">Next</a>
-      {% else %}
-      <span class="next_page disabled">Next</span>
-      {% endif %}
-    </div>
+    <!--  -->
+    {% if packages_after %}
+    <a href="{% url 'manager:explore' page|add:'1' %}">Next</a>
     {% else %}
-    <strong>There are no packages present.</strong>
+    <span class="next_page disabled">Next</span>
     {% endif %}
   </div>
+  {% else %}
+  <strong>There are no packages present.</strong>
+  {% endif %}
 </div>
 
 {% endblock %}

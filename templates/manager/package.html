@@ -12,66 +12,46 @@
 
 <!--  -->
 {% block body_block %}
-<div id="static">
-  <div id="detail">
-    <div id="package_name">{{ package.package_name }}</div>
-
-    <div id="update">
-      <!--  document.getElementById('para').innerHTML = Date().commit  -->
-    </div>
-
-    <div id="show_commit">
-      <h4>show the commit when upload</h4>
-    </div>
-
-    <div id="likes_and_views">
-      <strong id="view_count">{{ package.views }} views</strong>
-      <strong id="like_count">{{ package.downloads }} downloads</strong>
-      <!--  -->
-      {% if user.is_authenticated %}
-      <button
-        id="like_btn"
-        data-pakcageid="{{ package.id }}"
-        class="btn btn-primary btn-sm"
-        type="button"
-      >
-        <span data-feather="thumbs-up"></span>
-        Like Package
-      </button>
-      {% endif %}
-    </div>
-
-    <div id="button">
-      <button type="button" id="download" class="btn btn-default">
-        <a href="" download="download"></a>Download
-      </button>
-      {% if var1 %}
-      <button type="button" id="delete" class="btn btn-default">
-        <a href="" delete="delete"></a>Delete
-      </button>
-      <a onclick="if(confirm())return false;location.href=''">Delete</a>
-      {% else %}
-      <button
-        type="button"
-        id="cant_delete"
-        class="btn btn-default"
-        disabled="disabled"
-      >
-        <a href="" delete="delete"></a>Delete
-      </button>
-      <strong>You need to log in to see options.</strong>
-      {% endif %}
-    </div>
+<div class="title">
+  <h1 id="package_name">{{ package.package_name }}</h1>
+  
+  <div class="stats">
+    <p id="view_count">{{ package.views }} views</p>
+    <p id="like_count">{{ package.downloads }} downloads</p>
   </div>
+</div>
+  
+<div class="buttons">
+  <button id="download" class="button">
+    <a href="" download="download"></a>Download
+  </button>
 
+  {% if True %}
+  <!-- add "if user_is_owner" -->
+  <button 
+    type="button" 
+    id="delete" 
+    class="button">
+    <a href="" delete="delete"></a>Delete
+  </button>
+
+  <a href="{% url 'manager:add_version' package_name=package.package_name %}"
+  class="button">add version</a>
+  
+  {% else %}
+  <div></div>
+  {% endif %}
+</div>
+
+<!-- this should probably be where the readme is displayed -->
+<div id="show_commit">
+  <h4>message</h4>
+</div>
+  
   <div id="show_file">
     <h4>show what inside the package</h4>
   </div>
-  <a
-    href="{% url 'manager:add_version' package_name=package.package_name %}"
-    class="button"
-    >add version</a
-  >
+
 </div>
 
 {% endblock %}
