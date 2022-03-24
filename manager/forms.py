@@ -1,4 +1,5 @@
 from dataclasses import field
+from tkinter import Pack
 from django import forms
 from manager.models import UserProfile, Package, Version, Comment
 
@@ -14,7 +15,7 @@ class PackageForm(forms.ModelForm):
         fields = ('package_name', 'tags', 'public', 'readme')
 
 class VersionForm(forms.ModelForm):
-    new_current = forms.BooleanField()
+    new_current = forms.BooleanField(required=False)
     class Meta:
         model = Version
         fields = ('version_ID', 'dependencies', 'comment', "code_file")
@@ -23,3 +24,8 @@ class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ('text',)
+
+class ReadmeForm(forms.ModelForm):
+    class Meta:
+        model = Package
+        fields=('readme',)

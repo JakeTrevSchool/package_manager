@@ -16,10 +16,10 @@ class Package(models.Model):
     tags = models.TextField(blank=True)
 
     package_name = models.CharField(max_length=120, unique=True)
-    current_version = models.TextField(default="0.0.0")
+    current_version = models.CharField(max_length=20, default="0.0.0")
     
     def getUploadDir(instance, filename):
-        return f"packages/{instance.package_name}/{filename}"
+        return f"packages/{instance.package_name}/readme.md"
     
     readme = models.FileField(upload_to=getUploadDir)
     
@@ -41,8 +41,8 @@ class Version(models.Model):
 
     code_file = models.FileField(upload_to=getUploadDir)
 
-    comment = models.TextField(default="")
-    dependencies = models.TextField(default="")
+    comment = models.TextField(default="", blank=True)
+    dependencies = models.TextField(default="", blank=True )
     
     def __str__(self) -> str:
         return self.package + ":" + self.version_ID
