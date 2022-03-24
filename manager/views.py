@@ -1,3 +1,4 @@
+from struct import pack
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
@@ -103,6 +104,23 @@ def package(request: HttpRequest, package_name: str):
     }
     return render(request, 'manager/package.html', context=context_dict)
 
+def edit_readme(request:HttpRequest, package_name):
+    action = request.get_full_path()
+    package: Package = get_object_or_404(Package, package_name=package_name)
+
+    if not is_owner(package, request.user):
+        return redirect(reverse('manager:package', package_name))
+
+    if request.method == 'POST':
+        form = ReadmeForm(request.POST, request.FILES, instance=package)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('manager:index'))
+        else:
+            print(form.errors)
+
+    form = ReadmeForm(instance=package)
+    return render(request, 'manager/form.html', {'form':form, 'action':action})
 
 @login_required
 def add_package(request: HttpRequest):
@@ -138,6 +156,11 @@ def add_version(request: HttpRequest, package_name:str):
             version: Version = form.save(commit=False)
             # add package to version.
             version.package = package
+
+
+            if (form.new_current):
+                redirect('manager:explore')
+
             version.save()
             return redirect('manager:index')
         else:
@@ -171,6 +194,8 @@ def profile(request:HttpRequest, profile_name:str):
 
     context_dict= {'profile':profile, 'user_packages':user_packages}
     return render(request, 'manager/profile.html', context=context_dict)
+
+
 
 def custom_page_not_found_view(request, exception):
     response = render(request, 'manager/404.html', {})
