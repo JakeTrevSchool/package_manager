@@ -2,7 +2,6 @@ from django.test import TestCase
 from manager.models import Package, UserProfile
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.shortcuts import render
 
 # Create your tests here.
 
@@ -130,8 +129,42 @@ class ProfileTests(TestCase):
 		login = self.client.login(username='ThisIsTheUsername', password='e92SinZod4')
 		profile = UserProfile(user=self.user, avatar="")
 		profile.save()
-		request = ''
 		response = self.client.get('/profile/ThisIsTheUsername')
 		self.assertContains(response, 'ThisIsTheUsername')
+
+	def test_user_packages_appear_on_profile_page(self):
+		# Checking if the packages created by the user are shown on the user's profile page.
+		self.user = User.objects.create_user(username='User123', email='User123@gmail.com', password='e92SinZod4')
+		login = self.client.login(username='User123', password='e92SinZod4')
+		profile = UserProfile(user=self.user, avatar="")
+		profile.save()
+		package = Package(author=profile, package_name='TheFirstPackage', downloads=0, views=2, public=0)
+		package.save()
+		package = Package(author=profile, package_name='TheSecondPackage', downloads=0, views=1, public=0)
+		package.save()
+		response = self.client.get('/profile/User123')
+		self.assertContains(response, 'TheFirstPackage')
+		self.assertContains(response, 'TheSecondPackage')
+
+	def test_profile_page_displays_downloads_of_packages(self):
+		# Checking if the profile page displays the correct values for downloads of the user's packages.
+		self.user = User.objects.create_user(username='User123', email='user4352@gmail.com', password='e92SinZod4')
+		login = self.client.login(username='User123', password='e92SinZod4')
+		profile = UserProfile(user=self.user, avatar="")
+		profile.save()
+		package = Package(author=profile, package_name='MyPackage', downloads=10, views=20)
+		package.save()
+		response = self.client.get('/profile/User123')
+		self.assertContains(response, "10 downloads")
+
+class ContactTests(TestCase):
+
+	def test_contact_us_page_loads_with_correct_contact_info(self):
+		# Checking if the contact us page works.
+		response = self.client.get(reverse('manager:contact'))
+		self.assertContains(response, "@thepackagemanager")
+		self.assertContains(response, "packagemanager@gmail.com")
+		self.assertContains(response, "+44 9876 543210")
+
 
 
