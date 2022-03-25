@@ -31,7 +31,7 @@ def index(request: HttpRequest):
         'packages': Package.objects.count(),
     }
 
-    visitor_cookie_handler(request)
+    visitor_cookie_handler(request, package)
 
     return render(request, 'manager/home.html', context=context)
 
