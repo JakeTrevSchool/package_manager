@@ -90,7 +90,7 @@ def package(request: HttpRequest, package_name: str):
 
     user_is_owner = is_owner(package, request.user)
 
-    visitor_cookie_handler(request)
+    visitor_cookie_handler(request, package)
     views = request.session['views']
 
     package_versions = Version.objects.filter(package=package)
@@ -233,21 +233,20 @@ def get_server_side_cookie(request, cookie, default_val=None):
     return val
 
 
-def visitor_cookie_handler(request):
-    views = int(get_server_side_cookie(request, 'views', '1'))
-
+def visitor_cookie_handler(request:HttpRequest, package:Package):
     last_visit_cookie = get_server_side_cookie(request,
                                                'last_visit',
                                                str(datetime.now()))
+
     last_visit_time = datetime.strptime(last_visit_cookie[:-7],
                                         '%Y-%m-%d %H:%M:%S')
 
     if (datetime.now() - last_visit_time).days > 0:
-        views = views + 1
+        package.views = package.views + 1
+        package.save()
 
         request.session['last_visit'] = str(datetime.now())
     else:
         request.session['last_visit'] = last_visit_cookie
 
-    request.session['views'] = views
     # {{ views }}
