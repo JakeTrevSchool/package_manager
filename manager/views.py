@@ -154,15 +154,12 @@ def add_version(request: HttpRequest, package_name:str):
     if request.method == 'POST':
         form = VersionForm(request.POST, request.FILES)
         if form.is_valid():
-            new_current = form.data['new_current']
-            print(new_current)
-            if (new_current):
-                redirect('manager:explore')
-
             version: Version = form.save(commit=False)
             # add package to version.
             version.package = package
             version.save()
+            package.current_version = version.version_ID
+            package.save()
             return redirect('manager:index')
         else:
             print (form.errors)
