@@ -5,16 +5,17 @@
 version selection for code on package page
 
 download button should work
-
-- updating views and downloads counts
+updating downloads counts
 
 comments
 
 if i have time:
-split the app into mutliple django apps
-for better organisation.
+
+split the app into mutliple django apps for better organisation.
 
 form styling
 
 a success page
 better redirects for forms
+
+search

@@ -1,4 +1,4 @@
-from django.http import HttpRequest, JsonResponse
+from django.http import Http404, HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -146,6 +146,19 @@ def get_code(request: HttpRequest, package_name:str, version:str):
     }
 
     return JsonResponse(data)    
+
+def download(request:HttpRequest, package_name: str, version:str):
+    package:Package = get_object_or_404(Package, package_name=package_name)
+    try:
+        requested_version: Version = Version.objects.filter(package=package).get(version_ID=version)
+    except Version.DoesNotExist:
+        raise Http404("Package version does not exist")
+    
+    context = {'download_url':requested_version.code_file.url}
+
+
+    return render(request, 'manager/download.html', context)
+
 
 def edit_readme(request:HttpRequest, package_name:str):
     action = request.get_full_path()
