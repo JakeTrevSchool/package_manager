@@ -1,5 +1,4 @@
-from struct import pack
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -11,12 +10,19 @@ PAGE_SIZE = 5
 
 
 
-# a helper method
+# a helper methods
 def getUserPackages(user: User):
     author = UserProfile.objects.get(user=user)
     packages = Package.objects.filter(author=author)
     return packages
 
+def is_owner(package:Package, user:User):
+    is_owner = False
+    if(user.is_authenticated):
+        is_owner = (package.author == UserProfile.objects.get(user=user))
+    return is_owner
+
+# views
 def index(request: HttpRequest):
     context = {
         'developers': UserProfile.objects.count(),
@@ -88,7 +94,7 @@ def package(request: HttpRequest, package_name: str):
 
     code_content = "No releases yet..."
     try:
-        cur_version:Version = Version.objects.get(version_ID=package.current_version)
+        cur_version:Version = package_versions.get(version_ID=package.current_version)
     except Version.DoesNotExist:
         cur_version = None
 
@@ -96,16 +102,41 @@ def package(request: HttpRequest, package_name: str):
         with cur_version.code_file.open('r') as f:
             code_content = f.read()
 
+    versions = [version.version_ID for version in package_versions.all()]
+
     context_dict = {
         'package':package, 
         'user_is_owner':user_is_owner,
         'readme': readme,
         'version_count':num_versions,
+        'versions': versions,
         'code_content': code_content,
     }
     return render(request, 'manager/package.html', context=context_dict)
 
-def edit_readme(request:HttpRequest, package_name):
+def get_code(request: HttpRequest, package_name:str, version:str):
+    package:Package = get_object_or_404(Package, package_name=package_name)
+    try:
+        requested_version: Version = Version.objects.filter(package=package).get(version_ID=version)
+        with requested_version.code_file.open('r') as f:
+            code_content = f.read()
+        status = "OK"
+
+    except Version.DoesNotExist:
+        code_content = """<h1> Something went wrong! </h1>
+        The version you are looking for does not exist."""
+        status = "ERROR"
+        
+    data = {
+        'version':version, 
+        'status':status,
+        'download_url':"",
+        'content':code_content,
+    }
+
+    return JsonResponse(data)    
+
+def edit_readme(request:HttpRequest, package_name:str):
     action = request.get_full_path()
     package: Package = get_object_or_404(Package, package_name=package_name)
 
@@ -200,8 +231,3 @@ def custom_page_not_found_view(request, exception):
     response.status_code = 404
     return response
 
-def is_owner(package:Package, user:User):
-    is_owner = False
-    if(user.is_authenticated):
-        is_owner = (package.author == UserProfile.objects.get(user=user))
-    return is_owner

@@ -58,7 +58,14 @@
 
 <div class="section_title">
   <h1>Code</h1>
-  <h3 class="wrapper">version: {{ version_count }}</h3>
+  <div class="wrapper">
+    <label for="version_select">version: </label>
+    <select name="version_select" id="version_select">
+      {% for version in versions %}
+      <option value="{{ version }}">{{ version }}</option>
+      {% endfor %}
+    </select>
+  </div>
 </div>
 
 <div id="code">
