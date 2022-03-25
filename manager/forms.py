@@ -1,8 +1,9 @@
-from dataclasses import field
-from tkinter import Pack
+import re
 from django import forms
 from manager.models import UserProfile, Package, Version, Comment
 
+def contains_space(test:str):
+	return bool(re.search("\s", test))
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
@@ -10,6 +11,13 @@ class UserProfileForm(forms.ModelForm):
         fields = ('avatar',)
 
 class PackageForm(forms.ModelForm):
+
+    def clean_package_name(self):
+        package_name = self.data.get('package_name')
+        if contains_space(package_name):
+            raise forms.ValidationError("Your package name must not include spaces", code='invalid')
+        return package_name
+
     class Meta:
         model = Package
         fields = ('package_name', 'tags', 'public', 'readme')
