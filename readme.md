@@ -4,3 +4,4 @@
 [django-registration-redux](https://pypi.org/project/django-registration-redux/) used to provide autentication pages
 
 [django-markdownify](https://pypi.org/project/django-markdownify/) used to render readmes
+[highlight.js](https://highlightjs.org/) used for syntax highlighting on the package page
