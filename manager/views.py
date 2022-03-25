@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from manager.forms import ReadmeForm, UserProfileForm, PackageForm, VersionForm, CommentForm
 from manager.models import UserProfile, Package, Version
+from datetime import datetime
+
 # Create your views here.
 PAGE_SIZE = 5
 
@@ -26,12 +28,17 @@ def is_owner(package:Package, user:User):
 def index(request: HttpRequest):
     context = {
         'developers': UserProfile.objects.count(),
-        'packages': Package.objects.count()
+        'packages': Package.objects.count(),
     }
+
+    visitor_cookie_handler(request)
+
     return render(request, 'manager/home.html', context=context)
+
 
 def contact(request: HttpRequest):
     return render(request, 'manager/contact.html')
+
 
 def explore(request: HttpRequest, page=1):
     page = int(page)
@@ -41,12 +48,12 @@ def explore(request: HttpRequest, page=1):
     if (request.user.is_authenticated):
         user_packages = getUserPackages(request.user)[:PAGE_SIZE]
 
-    start_index = (page-1) * PAGE_SIZE
+    start_index = (page - 1) * PAGE_SIZE
     end_index = page * PAGE_SIZE
 
     num_packages = Package.objects.filter(public=True).count()
     num_pages = (num_packages // PAGE_SIZE) + 1
-    
+
     if start_index > num_packages:
         return redirect('manager:explore', num_pages)
 
@@ -57,19 +64,20 @@ def explore(request: HttpRequest, page=1):
     top_packages = top_packages.filter(public=True)[start_index:end_index]
 
     if page == 1:
-        pages = [page, page+1, page +2][:num_pages]
-    else :
-        pages = [page-1, page, page +1][:num_pages]
+        pages = [page, page + 1, page + 2][:num_pages]
+    else:
+        pages = [page - 1, page, page + 1][:num_pages]
 
     context_dict = {
-        'top_packages':top_packages,
-        'user_packages':user_packages,
+        'top_packages': top_packages,
+        'user_packages': user_packages,
         'packages_before': packages_before,
         'packages_after': packages_after,
-        'page':page,
-        'pages':pages,
+        'page': page,
+        'pages': pages,
     }
     return render(request, 'manager/explore.html', context=context_dict)
+
 
 def package(request: HttpRequest, package_name: str):
     package = get_object_or_404(Package, package_name=package_name)
@@ -85,28 +93,31 @@ def package(request: HttpRequest, package_name: str):
     # this could be modified in the future to allow for collaborators
 
     # get comments
-    comments = [] 
+    comments = []
 
     user_is_owner = is_owner(package, request.user)
+
+    visitor_cookie_handler(request, package)
+    views = request.session['views']
 
     package_versions = Version.objects.filter(package=package)
     num_versions = package_versions.count()
 
     code_content = "No releases yet..."
     try:
-        cur_version:Version = package_versions.get(version_ID=package.current_version)
+        cur_version: Version = Version.objects.get(version_ID=package.current_version)
     except Version.DoesNotExist:
         cur_version = None
 
-    if(cur_version):
+    if (cur_version):
         with cur_version.code_file.open('r') as f:
             code_content = f.read()
 
     versions = [version.version_ID for version in package_versions.all()]
 
     context_dict = {
-        'package':package, 
-        'user_is_owner':user_is_owner,
+        'package': package,
+        'user_is_owner': user_is_owner,
         'readme': readme,
         'version_count':num_versions,
         'versions': versions,
@@ -152,7 +163,8 @@ def edit_readme(request:HttpRequest, package_name:str):
             print(form.errors)
 
     form = ReadmeForm(instance=package)
-    return render(request, 'manager/form.html', {'form':form, 'action':action})
+    return render(request, 'manager/form.html', {'form': form, 'action': action})
+
 
 @login_required
 def add_package(request: HttpRequest):
@@ -170,16 +182,17 @@ def add_package(request: HttpRequest):
         else:
             print(form.errors)
 
-    return render(request, 'manager/form.html', {'form':form, 'action':action})
+    return render(request, 'manager/form.html', {'form': form, 'action': action})
+
 
 @login_required
-def add_version(request: HttpRequest, package_name:str):
+def add_version(request: HttpRequest, package_name: str):
     action = request.get_full_path()
     package = get_object_or_404(Package, package_name=package_name)
-    
+
     if not is_owner(package, request.user):
         return redirect(reverse('manager:package', package_name))
-    
+
     form = VersionForm()
 
     if request.method == 'POST':
@@ -193,9 +206,10 @@ def add_version(request: HttpRequest, package_name:str):
             package.save()
             return redirect('manager:index')
         else:
-            print (form.errors)
+            print(form.errors)
 
-    return render(request, 'manager/form.html', {'form':form, 'action':action, 'package':package})
+    return render(request, 'manager/form.html', {'form': form, 'action': action, 'package': package})
+
 
 @login_required
 def register_profile(request: HttpRequest):
@@ -211,19 +225,19 @@ def register_profile(request: HttpRequest):
             return redirect(reverse('manager:index'))
         else:
             print(form.errors)
-    
+
     context_dict = {'form': form}
     return render(request, 'registration/register_profile.html', context_dict)
 
-def profile(request:HttpRequest, profile_name:str):
+
+def profile(request: HttpRequest, profile_name: str):
     user = get_object_or_404(User, username=profile_name)
     profile = get_object_or_404(UserProfile, user=user)
 
     user_packages = getUserPackages(user)[:PAGE_SIZE]
 
-    context_dict= {'profile':profile, 'user_packages':user_packages}
+    context_dict = {'profile': profile, 'user_packages': user_packages}
     return render(request, 'manager/profile.html', context=context_dict)
-
 
 
 def custom_page_not_found_view(request, exception):
@@ -231,3 +245,25 @@ def custom_page_not_found_view(request, exception):
     response.status_code = 404
     return response
 
+def get_server_side_cookie(request, cookie, default_val=None):
+    val = request.session.get(cookie)
+    if not val:
+        val = default_val
+    return val
+
+
+def visitor_cookie_handler(request:HttpRequest, package:Package):
+    last_visit_cookie = get_server_side_cookie(request,
+                                               'last_visit',
+                                               str(datetime.now()))
+
+    last_visit_time = datetime.strptime(last_visit_cookie[:-7],
+                                        '%Y-%m-%d %H:%M:%S')
+
+    if (datetime.now() - last_visit_time).days > 0:
+        package.views = package.views + 1
+        package.save()
+
+        request.session['last_visit'] = str(datetime.now())
+    else:
+        request.session['last_visit'] = last_visit_cookie
