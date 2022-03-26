@@ -107,7 +107,8 @@ def package(request: HttpRequest, package_name: str):
 
     code_content = "No releases yet..."
     try:
-        cur_version: Version = Version.objects.get(version_ID=package.current_version)
+        cur_version: Version = Version.objects.get(
+            version_ID=package.current_version)
     except Version.DoesNotExist:
         cur_version = None
 
@@ -131,7 +132,8 @@ def package(request: HttpRequest, package_name: str):
 def get_code(request: HttpRequest, package_name: str, version: str):
     package: Package = get_object_or_404(Package, package_name=package_name)
     try:
-        requested_version: Version = Version.objects.filter(package=package).get(version_ID=version)
+        requested_version: Version = Version.objects.filter(
+            package=package).get(version_ID=version)
         with requested_version.code_file.open('r') as f:
             code_content = f.read()
         status = "OK"
