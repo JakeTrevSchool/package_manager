@@ -60,14 +60,22 @@
   {% endif %}
 </div>
 
-<!-- top packages -->
+<!-- i replaced the top package and change for search package -->
 <div class="segment" id="top_5packages">
   <div class="title">
-    <h2>Top Packages</h2>
+    <h2>Search Packages</h2>
   </div>
-  {% if top_packages %}
+
+  <br/>
+        <!-- the action url below might need to fix -->
+  <form action="{% url 'manager:search_packages' %}" method="GET" value="{{request.GET.q}}">
+  Search <input type="text" name="q" value="{{request.GET.q}}" placeholder="Search packages"/>
+  <input type="submit" name="submit" value="Search"/>
+  </form>
+
+  {% if submitbutton == 'Search' and request.GET.q != '' %}
   <ul class="package_list">
-    {% for package in top_packages %}
+    {% for result in results %}
     <li class="package">
       <a
         href="{% url 'manager:package' package.package_name %}"

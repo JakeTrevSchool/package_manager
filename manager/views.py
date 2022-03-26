@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.contrib.auth.decorators import login_required
@@ -11,18 +12,19 @@ from datetime import datetime
 PAGE_SIZE = 5
 
 
-
 # a helper methods
 def getUserPackages(user: User):
     author = UserProfile.objects.get(user=user)
     packages = Package.objects.filter(author=author)
     return packages
 
-def is_owner(package:Package, user:User):
+
+def is_owner(package: Package, user: User):
     is_owner = False
-    if(user.is_authenticated):
+    if (user.is_authenticated):
         is_owner = (package.author == UserProfile.objects.get(user=user))
     return is_owner
+
 
 # views
 def index(request: HttpRequest):
@@ -119,14 +121,15 @@ def package(request: HttpRequest, package_name: str):
         'package': package,
         'user_is_owner': user_is_owner,
         'readme': readme,
-        'version_count':num_versions,
+        'version_count': num_versions,
         'versions': versions,
         'code_content': code_content,
     }
     return render(request, 'manager/package.html', context=context_dict)
 
-def get_code(request: HttpRequest, package_name:str, version:str):
-    package:Package = get_object_or_404(Package, package_name=package_name)
+
+def get_code(request: HttpRequest, package_name: str, version: str):
+    package: Package = get_object_or_404(Package, package_name=package_name)
     try:
         requested_version: Version = Version.objects.filter(package=package).get(version_ID=version)
         with requested_version.code_file.open('r') as f:
@@ -137,17 +140,18 @@ def get_code(request: HttpRequest, package_name:str, version:str):
         code_content = """<h1> Something went wrong! </h1>
         The version you are looking for does not exist."""
         status = "ERROR"
-        
+
     data = {
-        'version':version, 
-        'status':status,
-        'download_url':"",
-        'content':code_content,
+        'version': version,
+        'status': status,
+        'download_url': "",
+        'content': code_content,
     }
 
-    return JsonResponse(data)    
+    return JsonResponse(data)
 
-def edit_readme(request:HttpRequest, package_name:str):
+
+def edit_readme(request: HttpRequest, package_name: str):
     action = request.get_full_path()
     package: Package = get_object_or_404(Package, package_name=package_name)
 
@@ -245,6 +249,7 @@ def custom_page_not_found_view(request, exception):
     response.status_code = 404
     return response
 
+
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)
     if not val:
@@ -252,7 +257,7 @@ def get_server_side_cookie(request, cookie, default_val=None):
     return val
 
 
-def visitor_cookie_handler(request:HttpRequest, package:Package):
+def visitor_cookie_handler(request: HttpRequest, package: Package):
     last_visit_cookie = get_server_side_cookie(request,
                                                'last_visit',
                                                str(datetime.now()))
@@ -267,3 +272,26 @@ def visitor_cookie_handler(request:HttpRequest, package:Package):
         request.session['last_visit'] = str(datetime.now())
     else:
         request.session['last_visit'] = last_visit_cookie
+
+
+def search_packages(request):
+    if request.method == 'GET':
+        query = request.GET.get('q')
+
+        submitbutton = request.GET.get('submit')
+
+        if query is not None:
+            lookups = Q(package__icontains=query)
+
+            results = Package.objects.filter(lookups).distinct()
+
+            context = {'results': results,
+                       'submitbutton': submitbutton}
+
+            return render(request, 'manager/explore.html', context)
+
+        else:
+            return render(request, 'manager/explore.html')
+
+    else:
+        return render(request, 'manager/explore.html')
