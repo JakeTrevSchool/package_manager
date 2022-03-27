@@ -3,6 +3,13 @@
 
 <!--  -->
 {% block header_block %}
+<script src="{% static 'scripts/package.js' %}"></script>
+<script>
+  // this script sets up some urls into JS variables
+  // this cannot be done in a separate script, thus they are done here
+  let url_base = "{% url 'manager:package' package.package_name %}/get/"
+  let update_downloads = () => {fetch("{% url 'manager:update_downloads' package.package_name %}")}
+</script>
 <link
   rel="stylesheet"
   type="text/css"
@@ -13,6 +20,9 @@
   type="text/css"
   href="{% static 'styles/readme.css' %}"
 />
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/atom-one-dark.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 {% endblock %}
 
 <!--  -->
@@ -28,7 +38,7 @@
 </div>
   
 <div class="buttons">
-    <a href="{{ package.readme.url }}" class="button">Download Latest</a>
+    <a href="{{ package.readme.url }}" class="button" onclick="update_downloads()">Download Latest</a>
 
   {% if user_is_owner %}
     <a href="" class="button">Delete</a>
@@ -56,11 +66,15 @@
   </div>
 </div>
 
-<div class="section_title">
+<div class="section_title" id="code_header">
   <h1>Code</h1>
   <div class="wrapper">
-    <label for="version_select">version: </label>
-    <select name="version_select" id="version_select">
+    <a class="button" id="download_version">Download this version</a>
+  </div>
+  <div class="wrapper">
+    <label for="version_select">version: &nbsp;</label>
+    <select name="version_select" id="version_select" class="button" onchange="load_version(this, url_base)">
+      <option style="display:none">---</option>
       {% for version in versions %}
       <option value="{{ version }}">{{ version }}</option>
       {% endfor %}
@@ -69,15 +83,9 @@
 </div>
 
 <div id="code">
-  <div class="scrollbox">
-    <pre>
-      <code>
-        <div>{{ code_content }}</div>
-      </code>
-    </pre>
-  </div>
-</div>
 
 </div>
 
+</div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
 {% endblock %}
