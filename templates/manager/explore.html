@@ -11,12 +11,7 @@
 <link
   rel="stylesheet"
   type="text/css"
-  href="{% static 'styles/package_detail.css' %}"
-/>
-<link
-  rel="stylesheet"
-  type="text/css"
-  href="{% static 'styles/tables.css' %}"
+  href="{% static 'styles/package_list.css' %}"
 />
 {% endblock %}
 <!--  -->
@@ -27,6 +22,7 @@
     <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
   </div>
   {% if user.is_authenticated %} {% if user_packages%}
+  <!-- this should be extracted to a component -->
   <ul class="package_list">
     {% for package in user_packages %}
     <li class="package">
@@ -73,32 +69,33 @@
   <input type="submit" name="submit" value="Search"/>
   </form>
 
-  {% if submitbutton == 'Search' and request.GET.q != '' %}
   <ul class="package_list">
+    {% if results %}
     {% for result in results %}
     <li class="package">
       <a
-        href="{% url 'manager:package' package.package_name %}"
+        href="{% url 'manager:package' result.package_name %}"
         class="package_link"
       >
-        <h2>{{ package.package_name }}</h2>
+        <h2>{{ result.package_name }}</h2>
 
         <p>description</p>
         <!-- what is this meant to be? -->
 
         <div class="details">
-          <div class="detail">by {{ package.author }}</div>
+          <div class="detail">by {{ result.author }}</div>
 
-          <div class="detail">version {{ package.current_version }}</div>
+          <div class="detail">version {{ result.current_version }}</div>
         </div>
         <div class="details">
-          <div class="detail">{{ package.downloads }} downloads</div>
+          <div class="detail">{{ result.downloads }} downloads</div>
 
-          <div class="detail">{{ package.views }} views</div>
+          <div class="detail">{{ result.views }} views</div>
         </div>
       </a>
     </li>
     {% endfor %}
+    {% endif %}
   </ul>
   <!-- page controls -->
   <div class="page_controls">
@@ -121,9 +118,6 @@
     <span class="next_page disabled">Next</span>
     {% endif %}
   </div>
-  {% else %}
-  <strong>There are no packages present.</strong>
-  {% endif %}
 </div>
 
 {% endblock %}

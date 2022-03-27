@@ -12,6 +12,7 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),
 
     path('explore/<int:page>', views.explore, name='explore'),
+    path('search/', views.search_packages, name='search_packages'),
 
     path('add_package', views.add_package, name="add_package"),
 
@@ -19,11 +20,11 @@ urlpatterns = [
     path('package/<slug:package_name>/add_version',
          views.add_version, name="add_version"),
     path('package/<slug:package_name>/get/<str:version>',
-         views.get_code, name="get_code"),
+         views.get_package_code, name="get_code"),
     path('package/update_download/<slug:package_name>',
-         views.update_download, name="update_downloads"),
+         views.update_download_count, name="update_downloads"),
     path('package/<slug:package_name>/readme',
-         views.edit_readme, name="edit_readme"),
+         views.edit_package_readme, name="edit_readme"),
 
     path('profile/<slug:profile_name>', views.profile, name="profile"),
     path('accounts/register_profile',

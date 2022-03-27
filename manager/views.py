@@ -6,27 +6,10 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from manager.forms import ReadmeForm, UserProfileForm, PackageForm, VersionForm, CommentForm
 from manager.models import UserProfile, Package, Version
-from datetime import datetime
+from manager.helperMethods import getUserPackages, handle_package_view_count_cookies, is_owner
 
 # Create your views here.
 PAGE_SIZE = 5
-
-
-# a helper methods
-def getUserPackages(user: User):
-    author = UserProfile.objects.get(user=user)
-    packages = Package.objects.filter(author=author)
-    return packages
-
-
-def is_owner(package: Package, user: User):
-    is_owner = False
-    if (user.is_authenticated):
-        is_owner = (package.author == UserProfile.objects.get(user=user))
-    return is_owner
-
-
-# views
 
 
 def index(request: HttpRequest):
@@ -34,7 +17,6 @@ def index(request: HttpRequest):
         'developers': UserProfile.objects.count(),
         'packages': Package.objects.count(),
     }
-
     return render(request, 'manager/home.html', context=context)
 
 
@@ -71,7 +53,7 @@ def explore(request: HttpRequest, page=1):
         pages = [page - 1, page, page + 1][:num_pages]
 
     context_dict = {
-        'top_packages': top_packages,
+        'packages': top_packages,
         'user_packages': user_packages,
         'packages_before': packages_before,
         'packages_after': packages_after,
@@ -79,6 +61,29 @@ def explore(request: HttpRequest, page=1):
         'pages': pages,
     }
     return render(request, 'manager/explore.html', context=context_dict)
+
+
+def search_packages(request):
+    context = {}
+    if request.method == 'GET':
+        query = request.GET.get('q')
+
+        if query:
+            lookups = Q(package_name__icontains=query) | Q(
+                tags__icontains=query)
+
+            results = Package.objects.filter(lookups).distinct()
+
+            context = {'results': results}
+
+    context = {
+        'packages': top_packages,
+        'packages_before': packages_before,
+        'packages_after': packages_after,
+        'page': page,
+        'pages': pages,
+    }
+    return render(request, 'manager/explore.html', context=context)
 
 
 def package(request: HttpRequest, package_name: str):
@@ -91,30 +96,24 @@ def package(request: HttpRequest, package_name: str):
             readme = f.read()
     else:
         readme = "# This package does not have a readme"
-    # check if user has admin priveliges
-    # this could be modified in the future to allow for collaborators
 
     # get comments
     comments = []
 
+    # check if user has admin priveliges
+    # this could be modified in the future to allow for collaborators
     user_is_owner = is_owner(package, request.user)
 
-    visitor_cookie_handler(request, package)
+    handle_package_view_count_cookies(request, package)
 
     package_versions = Version.objects.filter(package=package)
     num_versions = package_versions.count()
-
-    code_content = "No releases yet..."
 
     try:
         cur_version: Version = Version.objects.get(
             version_ID=package.current_version)
     except Version.DoesNotExist:
         cur_version = None
-
-    if (cur_version):
-        with cur_version.code_file.open('r') as f:
-            code_content = f.read()
 
     versions = [version.version_ID for version in package_versions.all()]
 
@@ -124,12 +123,11 @@ def package(request: HttpRequest, package_name: str):
         'readme': readme,
         'version_count': num_versions,
         'versions': versions,
-        'code_content': code_content,
     }
     return render(request, 'manager/package.html', context=context_dict)
 
 
-def get_code(request: HttpRequest, package_name: str, version: str):
+def get_package_code(request: HttpRequest, package_name: str, version: str):
     package: Package = get_object_or_404(Package, package_name=package_name)
     try:
         requested_version: Version = Version.objects.filter(
@@ -155,15 +153,14 @@ def get_code(request: HttpRequest, package_name: str, version: str):
     return JsonResponse(data)
 
 
-def update_download(request: HttpRequest, package_name: str):
+def update_download_count(request: HttpRequest, package_name: str):
     package: Package = get_object_or_404(Package, package_name=package_name)
     package.downloads += 1
     package.save()
     return HttpResponse()
 
 
-def edit_readme(request: HttpRequest, package_name: str):
-    action = request.get_full_path()
+def edit_package_readme(request: HttpRequest, package_name: str):
     package: Package = get_object_or_404(Package, package_name=package_name)
 
     if not is_owner(package, request.user):
@@ -178,14 +175,13 @@ def edit_readme(request: HttpRequest, package_name: str):
             print(form.errors)
 
     form = ReadmeForm(instance=package)
+    action = request.get_full_path()
+
     return render(request, 'manager/form.html', {'form': form, 'action': action})
 
 
 @login_required
 def add_package(request: HttpRequest):
-    action = request.get_full_path()
-    form = PackageForm()
-
     if request.method == 'POST':
         form = PackageForm(request.POST, request.FILES)
         if form.is_valid():
@@ -197,18 +193,18 @@ def add_package(request: HttpRequest):
         else:
             print(form.errors)
 
+    form = PackageForm()
+    action = request.get_full_path()
+
     return render(request, 'manager/form.html', {'form': form, 'action': action})
 
 
 @login_required
 def add_version(request: HttpRequest, package_name: str):
-    action = request.get_full_path()
     package = get_object_or_404(Package, package_name=package_name)
 
     if not is_owner(package, request.user):
         return redirect(reverse('manager:package', package_name))
-
-    form = VersionForm()
 
     if request.method == 'POST':
         form = VersionForm(request.POST, request.FILES)
@@ -223,12 +219,21 @@ def add_version(request: HttpRequest, package_name: str):
         else:
             print(form.errors)
 
-    return render(request, 'manager/form.html', {'form': form, 'action': action, 'package': package})
+    form = VersionForm()
+    action = request.get_full_path()
+
+    context_dict = {
+        'form': form,
+        'action': action,
+        'package': package
+    }
+    return render(request, 'manager/form.html', context_dict)
+
+# move this into user_form
 
 
 @login_required
 def register_profile(request: HttpRequest):
-    form = UserProfileForm()
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES)
 
@@ -241,8 +246,8 @@ def register_profile(request: HttpRequest):
         else:
             print(form.errors)
 
-    context_dict = {'form': form}
-    return render(request, 'registration/register_profile.html', context_dict)
+    form = UserProfileForm()
+    return render(request, 'registration/register_profile.html', {'form': form})
 
 
 def profile(request: HttpRequest, profile_name: str):
@@ -259,50 +264,3 @@ def custom_page_not_found_view(request, exception):
     response = render(request, 'manager/404.html', {})
     response.status_code = 404
     return response
-
-
-def get_server_side_cookie(request, cookie, default_val=None):
-    val = request.session.get(cookie)
-    if not val:
-        val = default_val
-    return val
-
-
-def visitor_cookie_handler(request: HttpRequest, package: Package):
-    last_visit_cookie = get_server_side_cookie(request,
-                                               'last_visit',
-                                               str(datetime.now()))
-
-    last_visit_time = datetime.strptime(last_visit_cookie[:-7],
-                                        '%Y-%m-%d %H:%M:%S')
-
-    if (datetime.now() - last_visit_time).days > 0:
-        package.views = package.views + 1
-        package.save()
-
-        request.session['last_visit'] = str(datetime.now())
-    else:
-        request.session['last_visit'] = last_visit_cookie
-
-
-def search_packages(request):
-    if request.method == 'GET':
-        query = request.GET.get('q')
-
-        submitbutton = request.GET.get('submit')
-
-        if query is not None:
-            lookups = Q(package__icontains=query)
-
-            results = Package.objects.filter(lookups).distinct()
-
-            context = {'results': results,
-                       'submitbutton': submitbutton}
-
-            return render(request, 'manager/explore.html', context)
-
-        else:
-            return render(request, 'manager/explore.html')
-
-    else:
-        return render(request, 'manager/explore.html')

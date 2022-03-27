@@ -2,6 +2,10 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
+move user packages out of "explore"
+
+update user profile page & add edit page
+
 delete button
 
 comments
