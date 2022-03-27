@@ -3,6 +3,10 @@
 
 <!--  -->
 {% block header_block %}
+<script src="{% static 'scripts/load.js' %}"></script>
+<script>
+  let url_base = "{% url 'manager:package' package.package_name %}/"
+</script>
 <link
   rel="stylesheet"
   type="text/css"
@@ -15,6 +19,7 @@
 />
 <link rel="stylesheet"
       href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/styles/atom-one-dark.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 {% endblock %}
 
 <!--  -->
@@ -58,11 +63,14 @@
   </div>
 </div>
 
-<div class="section_title">
+<div class="section_title" id="code_header">
   <h1>Code</h1>
   <div class="wrapper">
+    <a class="button" id="download_version">Download this version</a>
+  </div>
+  <div class="wrapper">
     <label for="version_select">version: </label>
-    <select name="version_select" id="version_select">
+    <select name="version_select" id="version_select" onchange="load_version(this, url_base)">
       {% for version in versions %}
       <option value="{{ version }}">{{ version }}</option>
       {% endfor %}
@@ -71,14 +79,9 @@
 </div>
 
 <div id="code">
-    <pre>
-      <code>
-        <div>{{ code_content }}</div>
-      </code>
-    </pre>
+
 </div>
 
 </div>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
 {% endblock %}

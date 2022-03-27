@@ -5,3 +5,7 @@
 
 [django-markdownify](https://pypi.org/project/django-markdownify/) used to render readmes
 [highlight.js](https://highlightjs.org/) used for syntax highlighting on the package page
+
+for writing the JS scripts, we also used 
+[Typescript](https://www.typescriptlang.org/), for typing and
+[Jquery](https://jquery.com/) for DOM editing

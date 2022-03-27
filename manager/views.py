@@ -98,12 +98,12 @@ def package(request: HttpRequest, package_name: str):
     user_is_owner = is_owner(package, request.user)
 
     visitor_cookie_handler(request, package)
-    views = request.session['views']
 
     package_versions = Version.objects.filter(package=package)
     num_versions = package_versions.count()
 
     code_content = "No releases yet..."
+
     try:
         cur_version: Version = Version.objects.get(
             version_ID=package.current_version)
@@ -134,17 +134,19 @@ def get_code(request: HttpRequest, package_name: str, version: str):
             package=package).get(version_ID=version)
         with requested_version.code_file.open('r') as f:
             code_content = f.read()
+        url = requested_version.code_file.url
         status = "OK"
 
     except Version.DoesNotExist:
         code_content = """<h1> Something went wrong! </h1>
         The version you are looking for does not exist."""
+        url = ""
         status = "ERROR"
 
     data = {
         'version': version,
         'status': status,
-        'download_url': "",
+        'download_url': url,
         'content': code_content,
     }
 
