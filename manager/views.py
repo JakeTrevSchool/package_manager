@@ -11,27 +11,27 @@ from datetime import datetime
 PAGE_SIZE = 5
 
 
-
 # a helper methods
 def getUserPackages(user: User):
     author = UserProfile.objects.get(user=user)
     packages = Package.objects.filter(author=author)
     return packages
 
-def is_owner(package:Package, user:User):
+
+def is_owner(package: Package, user: User):
     is_owner = False
     if(user.is_authenticated):
         is_owner = (package.author == UserProfile.objects.get(user=user))
     return is_owner
 
 # views
+
+
 def index(request: HttpRequest):
     context = {
         'developers': UserProfile.objects.count(),
         'packages': Package.objects.count(),
     }
-
-    visitor_cookie_handler(request, package)
 
     return render(request, 'manager/home.html', context=context)
 
@@ -105,7 +105,8 @@ def package(request: HttpRequest, package_name: str):
 
     code_content = "No releases yet..."
     try:
-        cur_version: Version = Version.objects.get(version_ID=package.current_version)
+        cur_version: Version = Version.objects.get(
+            version_ID=package.current_version)
     except Version.DoesNotExist:
         cur_version = None
 
@@ -119,16 +120,18 @@ def package(request: HttpRequest, package_name: str):
         'package': package,
         'user_is_owner': user_is_owner,
         'readme': readme,
-        'version_count':num_versions,
+        'version_count': num_versions,
         'versions': versions,
         'code_content': code_content,
     }
     return render(request, 'manager/package.html', context=context_dict)
 
-def get_code(request: HttpRequest, package_name:str, version:str):
-    package:Package = get_object_or_404(Package, package_name=package_name)
+
+def get_code(request: HttpRequest, package_name: str, version: str):
+    package: Package = get_object_or_404(Package, package_name=package_name)
     try:
-        requested_version: Version = Version.objects.filter(package=package).get(version_ID=version)
+        requested_version: Version = Version.objects.filter(
+            package=package).get(version_ID=version)
         with requested_version.code_file.open('r') as f:
             code_content = f.read()
         status = "OK"
@@ -137,30 +140,31 @@ def get_code(request: HttpRequest, package_name:str, version:str):
         code_content = """<h1> Something went wrong! </h1>
         The version you are looking for does not exist."""
         status = "ERROR"
-        
+
     data = {
-        'version':version, 
-        'status':status,
-        'download_url':"",
-        'content':code_content,
+        'version': version,
+        'status': status,
+        'download_url': "",
+        'content': code_content,
     }
 
-    return JsonResponse(data)    
+    return JsonResponse(data)
 
-def download(request:HttpRequest, package_name: str, version:str):
-    package:Package = get_object_or_404(Package, package_name=package_name)
+
+def download(request: HttpRequest, package_name: str, version: str):
+    package: Package = get_object_or_404(Package, package_name=package_name)
     try:
-        requested_version: Version = Version.objects.filter(package=package).get(version_ID=version)
+        requested_version: Version = Version.objects.filter(
+            package=package).get(version_ID=version)
     except Version.DoesNotExist:
         raise Http404("Package version does not exist")
-    
-    context = {'download_url':requested_version.code_file.url}
 
+    context = {'download_url': requested_version.code_file.url}
 
     return render(request, 'manager/download.html', context)
 
 
-def edit_readme(request:HttpRequest, package_name:str):
+def edit_readme(request: HttpRequest, package_name: str):
     action = request.get_full_path()
     package: Package = get_object_or_404(Package, package_name=package_name)
 
@@ -258,6 +262,7 @@ def custom_page_not_found_view(request, exception):
     response.status_code = 404
     return response
 
+
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)
     if not val:
@@ -265,7 +270,7 @@ def get_server_side_cookie(request, cookie, default_val=None):
     return val
 
 
-def visitor_cookie_handler(request:HttpRequest, package:Package):
+def visitor_cookie_handler(request: HttpRequest, package: Package):
     last_visit_cookie = get_server_side_cookie(request,
                                                'last_visit',
                                                str(datetime.now()))
