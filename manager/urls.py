@@ -18,8 +18,8 @@ urlpatterns = [
          views.add_version, name="add_version"),
     path('package/<slug:package_name>/get/<str:version>',
          views.get_code, name="get_code"),
-    path('package/<slug:package_name>/<str:version>/get',
-         views.download, name="download"),
+    path('package/update_download/<slug:package_name>',
+         views.update_download, name="update_downloads"),
     path('package/<slug:package_name>/readme',
          views.edit_readme, name="edit_readme"),
 

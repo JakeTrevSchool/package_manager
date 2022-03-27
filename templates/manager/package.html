@@ -3,9 +3,12 @@
 
 <!--  -->
 {% block header_block %}
-<script src="{% static 'scripts/load.js' %}"></script>
+<script src="{% static 'scripts/package.js' %}"></script>
 <script>
+  // this script sets up some urls into JS variables
+  // this cannot be done in a separate script, thus they are done here
   let url_base = "{% url 'manager:package' package.package_name %}/get/"
+  let update_downloads = () => {fetch("{% url 'manager:update_downloads' package.package_name %}")}
 </script>
 <link
   rel="stylesheet"
@@ -35,7 +38,7 @@
 </div>
   
 <div class="buttons">
-    <a href="{{ package.readme.url }}" class="button">Download Latest</a>
+    <a href="{{ package.readme.url }}" class="button" onclick="update_downloads()">Download Latest</a>
 
   {% if user_is_owner %}
     <a href="" class="button">Delete</a>

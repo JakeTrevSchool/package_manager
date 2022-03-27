@@ -2,20 +2,17 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-version selection for code on package page
-
-download button should work
-updating downloads counts
+delete button
 
 comments
 
-if i have time:
+## if i have time:
 
-split the app into mutliple django apps for better organisation.
+split the app into mutliple django apps for better organisation. - (very unnecessary)
 
 form styling
 
 a success page
 better redirects for forms
 
-search
+search -  this is about half done
