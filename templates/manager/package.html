@@ -5,7 +5,7 @@
 {% block header_block %}
 <script src="{% static 'scripts/load.js' %}"></script>
 <script>
-  let url_base = "{% url 'manager:package' package.package_name %}/"
+  let url_base = "{% url 'manager:package' package.package_name %}/get/"
 </script>
 <link
   rel="stylesheet"
@@ -69,8 +69,9 @@
     <a class="button" id="download_version">Download this version</a>
   </div>
   <div class="wrapper">
-    <label for="version_select">version: </label>
-    <select name="version_select" id="version_select" onchange="load_version(this, url_base)">
+    <label for="version_select">version: &nbsp;</label>
+    <select name="version_select" id="version_select" class="button" onchange="load_version(this, url_base)">
+      <option style="display:none">---</option>
       {% for version in versions %}
       <option value="{{ version }}">{{ version }}</option>
       {% endfor %}

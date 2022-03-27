@@ -57,7 +57,7 @@
 
 code {
   padding: 10px;
-  overflow: scroll;
+  overflow-x: scroll;
 }
 /* custom scrollbar */
 code::-webkit-scrollbar {
