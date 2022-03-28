@@ -36,6 +36,7 @@ urlpatterns = [
     path('profile/<slug:profile_name>/<int:page>',
          views.profile, name="profile"),
 
+    path('edit_profile/', views.edit_profile, name="edit_profile"),
     path('accounts/register_profile/',
          views.register_profile, name="register_profile"),
 ]

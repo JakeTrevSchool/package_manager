@@ -4,7 +4,7 @@
 <link
   rel="stylesheet"
   type="text/css"
-  href="{% static 'styles/tables.css' %}"
+  href="{% static 'styles/profile.css' %}"
 />
 <link
   rel="stylesheet"
@@ -15,23 +15,37 @@
 <!--  -->
 {% block body_block %}
 <div>
-  <div id="profile_pic">
-    {% if user.userprofile.avatar == "" %}
-    <img id="avatar" src="{% static 'default_avatar.png' %}" />
-    {% else %}
-    <img id="avatar" src="{{ user.userprofile.avatar.url }}" alt="avatar" />
-    {% endif %}
+  <div id="details">
+    <div id="text_details">
+      <h1>{{profile.user.username}}</h1>
+      <h3 class="single_detail">
+        email: <span class="value">{{profile.user.email}}</span>
+      </h3>
+      <a href="{% url 'manager:edit_profile' %}" class="button">edit details</a>
+      <a href="{% url 'auth_password_change' %}" class="button"
+        >Change password</a
+      >
+    </div>
+
+    <div id="profile_pic">
+      {% if user.userprofile.avatar == "" %}
+      <img id="avatar_large" src="{% static 'default_avatar.png' %}" />
+      {% else %}
+      <img
+        id="avatar_large"
+        src="{{ user.userprofile.avatar.url }}"
+        alt="avatar"
+      />
+      {% endif %}
+    </div>
   </div>
 
-  <div id="name">
-    <h1>{{profile.user.username}}</h1>
+  <div class="title">
+    <h1>my packages</h1>
+    <div class="wrapper">
+      <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
+    </div>
   </div>
-
-
-  <h1>my packages</h1>
-  <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
-  <div id="my_packages">
-    {% list_packages %}
-  </div>
+  <div id="my_packages">{% list_packages %}</div>
 </div>
 {% endblock %}

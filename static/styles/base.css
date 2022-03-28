@@ -77,3 +77,9 @@ header {
   color: white;
   padding: 5px 10px;
 }
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

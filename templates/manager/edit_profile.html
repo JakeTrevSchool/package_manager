@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+{% extends 'manager/base.html' %} {% load staticfiles %}
+
+<!--  -->
+{% block header_block %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/form.css' %}" />
+{% endblock %} {% block body_block %}
+
+<div id="static">
+  <form method="post" action="{{ action }}" enctype="multipart/form-data">
+    {% csrf_token %} {{ form1.as_p }} {{ form2.as_p }}
+    <input type="submit" class="button" />
+  </form>
+</div>
+
+{% endblock %}

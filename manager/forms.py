@@ -1,10 +1,17 @@
 import re
 from django import forms
+from django.contrib.auth.models import User
 from manager.models import UserProfile, Package, Version, Comment
 
 
 def contains_space(test: str):
     return bool(re.search("\s", test))
+
+
+class EditUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ("username", "email")
 
 
 class UserProfileForm(forms.ModelForm):

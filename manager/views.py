@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
-from manager.forms import ReadmeForm, UserProfileForm, PackageForm, VersionForm, CommentForm
+from manager.forms import ReadmeForm, UserProfileForm, PackageForm, VersionForm, CommentForm, EditUserForm
 from manager.models import UserProfile, Package, Version
 from manager.helperMethods import getUserPackages, handle_package_view_count_cookies, is_owner, outOfPagesException, paginate
 
@@ -250,6 +250,8 @@ def profile(request: HttpRequest, profile_name: str, page=1):
     user = get_object_or_404(User, username=profile_name)
     profile = get_object_or_404(UserProfile, user=user)
 
+    is_loggedin_user = user == request.user
+
     page = int(page)
     user_packages = getUserPackages(user)
     try:
@@ -257,14 +259,47 @@ def profile(request: HttpRequest, profile_name: str, page=1):
     except outOfPagesException as e:
         return redirect('manager:profile', profile_name, e.num_pages)
 
+    list_null_message = "You havent added any packages yet" if is_loggedin_user else user.username + \
+        " hasn't uploaded any packages yet"
+
     context_dict.update({
+        'is_loggedin_user': is_loggedin_user,
         'profile': profile,
         'packages': user_packages,
         'pagination_url':  reverse('manager:profile', kwargs={"profile_name": profile_name}),
         'page': page,
-        'list_null_message': "You havent added any packages yet"
+        'list_null_message': list_null_message
     })
     return render(request, 'manager/profile.html', context=context_dict)
+
+
+@login_required
+def edit_profile(request: HttpRequest):
+    userProfile = get_object_or_404(UserProfile, user=request.user)
+
+    if request.method == 'POST':
+
+        user_form = EditUserForm(request.POST, instance=request.user)
+        user_profile_form = UserProfileForm(
+            request.POST, request.FILES, instance=userProfile)
+
+        if user_form.is_valid() and user_profile_form.is_valid():
+            user_form.save()
+            user_profile_form.save()
+            return redirect('manager:profile', request.user.username)
+
+        else:
+            print(user_form.errors)
+
+    user_form = EditUserForm(instance=request.user)
+    user_profile_form = UserProfileForm(instance=userProfile)
+
+    context_dict = {
+        "form1": user_form,
+        "form2": user_profile_form,
+    }
+
+    return render(request, 'manager/edit_profile.html', context=context_dict)
 
 
 def custom_page_not_found_view(request, exception):
