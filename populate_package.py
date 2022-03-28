@@ -22,7 +22,7 @@ def create_users():
         {'username': 'gamer6',
          'first_name': 'John',
          'last_name': 'Onions',
-         'password': '123456',},
+         'password': '123456'},
 
         {'username': '12CrustyBanana21',
          'first_name': 'Pedro',
