@@ -20,6 +20,8 @@ urlpatterns = [
     path('add_package', views.add_package, name="add_package"),
 
     path('package/<slug:package_name>/', views.package, name='package'),
+    path('package/<slug:package_name>/delete/',
+         views.delete_package, name='delete_package'),
     path('package/<slug:package_name>/add_version/',
          views.add_version, name="add_version"),
     path('package/<slug:package_name>/get/<str:version>/',

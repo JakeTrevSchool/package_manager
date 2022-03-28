@@ -123,6 +123,14 @@ def package(request: HttpRequest, package_name: str):
     return render(request, 'manager/package.html', context=context_dict)
 
 
+def delete_package(request: HttpRequest, package_name: str):
+    package = get_object_or_404(Package, package_name=package_name)
+    if (not is_owner(package, request.user)):
+        return redirect('manager:package', package_name)
+    package.delete()
+    return redirect('manager:index')
+
+
 def get_package_code(request: HttpRequest, package_name: str, version: str):
     package: Package = get_object_or_404(Package, package_name=package_name)
     try:
