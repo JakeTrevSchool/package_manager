@@ -53,13 +53,6 @@ def search_packages(request: HttpRequest, query="", page=1):
     page = int(page)
     results = []
 
-    context_dict = {
-        "num_pages": 1,
-        "pages": 1,
-        "pages_before": False,
-        "pages_after": False
-    }
-
     print("page " + str(page))
     print("query " + query)
 
@@ -70,11 +63,10 @@ def search_packages(request: HttpRequest, query="", page=1):
 
             results = Package.objects.filter(lookups).distinct()
 
-    if results:
-        try:
-            results, context_dict = paginate(results, page)
-        except outOfPagesException as e:
-            return redirect('manager:search_packages', str(query),   e.num_pages)
+    try:
+        results, context_dict = paginate(results, page)
+    except outOfPagesException as e:
+        return redirect('manager:search_packages', str(query),   e.num_pages)
 
     context_dict.update({
         'query': query,
@@ -259,8 +251,9 @@ def profile(request: HttpRequest, profile_name: str, page=1):
     profile = get_object_or_404(UserProfile, user=user)
 
     page = int(page)
+    user_packages = getUserPackages(user)
     try:
-        user_packages, context_dict = paginate(getUserPackages(user), page)
+        user_packages, context_dict = paginate(user_packages, page)
     except outOfPagesException as e:
         return redirect('manager:profile', profile_name, e.num_pages)
 

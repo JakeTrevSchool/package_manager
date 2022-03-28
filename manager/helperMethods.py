@@ -55,6 +55,14 @@ class outOfPagesException(Exception):
 
 
 def paginate(data: QuerySet, page: int):
+    if not data:
+        return data, {
+            "num_pages": 1,
+            "pages": [1],
+            "pages_before": False,
+            "pages_after": False
+        }
+
     start_index = (page - 1) * PAGE_SIZE
     end_index = page * PAGE_SIZE
 
