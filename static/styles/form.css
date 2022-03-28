@@ -1,0 +1,25 @@
+p {
+  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 10px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="file"]::file-selector-button,
+textarea {
+  margin: 5px;
+  background-color: lavender;
+  border-radius: 5px;
+  border: none;
+  resize: none;
+  box-shadow: var(--shadow);
+  padding: 5px;
+}
+
+ul {
+  list-style-type: none;
+}
