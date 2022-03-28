@@ -1,6 +1,7 @@
 media
 *.DS_Store
 .vscode
+migrations
 
 # node modules
 node_modules
