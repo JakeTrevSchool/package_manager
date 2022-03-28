@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE','package_manager.settings')
 
@@ -142,7 +142,7 @@ def add_user(user, avatar=None):
     u.avatar = avatar
     return u
 
-def add_package(author, tags, package_name, current_version, downloads=0 views=0, public):
+def add_package(author, tags, package_name, current_version, downloads, views, public):
     p = Package.objects.get_or_create()
     p.author = author
     p.tags = tags
