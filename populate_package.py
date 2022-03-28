@@ -158,7 +158,7 @@ def add_version(package, version_ID, code_file, comment, dependencies):
     v = Version.objects.get_or_create()
     v.package = package
     v.version_ID = version_ID
-    v.code_file = v.getUploadDir
+    v.code_file = code_file
     v.comment = comment
     v.dependencies = dependencies
 
