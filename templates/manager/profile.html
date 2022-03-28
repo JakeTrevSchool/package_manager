@@ -1,4 +1,4 @@
-{% extends 'manager/base.html' %} {% load staticfiles %}
+{% extends 'manager/base.html' %} {% load staticfiles %} {% load package_list %}
 <!--  -->
 {% block header_block %}
 <link
@@ -27,33 +27,11 @@
     <h1>{{profile.user.username}}</h1>
   </div>
 
+
+  <h1>my packages</h1>
+  <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
   <div id="my_packages">
-    <ul class="package_list">
-      {% for package in user_packages %}
-      <li class="package">
-        <a
-          href="{% url 'manager:package' package.package_name %}"
-          class="package_link"
-        >
-          <h2>{{ package.package_name }}</h2>
-
-          <p>description</p>
-          <!-- what is this meant to be? -->
-
-          <div class="details">
-            <div class="detail">by {{ package.author }}</div>
-
-            <div class="detail">version {{ package.current_version }}</div>
-          </div>
-          <div class="details">
-            <div class="detail">{{ package.downloads }} downloads</div>
-
-            <div class="detail">{{ package.views }} views</div>
-          </div>
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
+    {% list_packages %}
   </div>
 </div>
 {% endblock %}

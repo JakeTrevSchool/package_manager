@@ -1,15 +1,16 @@
+from django.conf import settings
 from django.db.models import Q
 from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.urls import reverse
 from manager.forms import ReadmeForm, UserProfileForm, PackageForm, VersionForm, CommentForm
 from manager.models import UserProfile, Package, Version
-from manager.helperMethods import getUserPackages, handle_package_view_count_cookies, is_owner
+from manager.helperMethods import getUserPackages, handle_package_view_count_cookies, is_owner, outOfPagesException, paginate
 
 # Create your views here.
-PAGE_SIZE = 5
+PAGE_SIZE = settings.MANAGER_PAGE_SIZE
 
 
 def index(request: HttpRequest):
@@ -26,64 +27,63 @@ def contact(request: HttpRequest):
 
 def explore(request: HttpRequest, page=1):
     page = int(page)
-
     # get user packages
     user_packages = []
     if (request.user.is_authenticated):
         user_packages = getUserPackages(request.user)[:PAGE_SIZE]
 
-    start_index = (page - 1) * PAGE_SIZE
-    end_index = page * PAGE_SIZE
+    top_packages = Package.objects.order_by('-views').filter(public=True)
 
-    num_packages = Package.objects.filter(public=True).count()
-    num_pages = (num_packages // PAGE_SIZE) + 1
+    try:
+        top_packages, context_dict = paginate(top_packages, page)
+    except outOfPagesException as e:
+        return redirect('manager:explore', e.num_pages)
 
-    if start_index > num_packages:
-        return redirect('manager:explore', num_pages)
-
-    packages_before = page != 1
-    packages_after = page != num_pages
-
-    top_packages = Package.objects.order_by('-views')
-    top_packages = top_packages.filter(public=True)[start_index:end_index]
-
-    if page == 1:
-        pages = [page, page + 1, page + 2][:num_pages]
-    else:
-        pages = [page - 1, page, page + 1][:num_pages]
-
-    context_dict = {
-        'packages': top_packages,
-        'user_packages': user_packages,
-        'packages_before': packages_before,
-        'packages_after': packages_after,
+    context_dict.update({
         'page': page,
-        'pages': pages,
-    }
+        'user_packages': user_packages,
+        'packages': top_packages,
+        'pagination_url': reverse('manager:explore'),
+        'list_null_message': "No packages have been added yet..."
+    })
     return render(request, 'manager/explore.html', context=context_dict)
 
 
-def search_packages(request):
-    context = {}
-    if request.method == 'GET':
-        query = request.GET.get('q')
+def search_packages(request: HttpRequest, query="", page=1):
+    page = int(page)
+    results = []
 
+    context_dict = {
+        "num_pages": 1,
+        "pages": 1,
+        "pages_before": False,
+        "pages_after": False
+    }
+
+    print("page " + str(page))
+    print("query " + query)
+
+    if request.method == 'GET':
         if query:
             lookups = Q(package_name__icontains=query) | Q(
                 tags__icontains=query)
 
             results = Package.objects.filter(lookups).distinct()
 
-            context = {'results': results}
+    if results:
+        try:
+            results, context_dict = paginate(results, page)
+        except outOfPagesException as e:
+            return redirect('manager:search_packages', str(query),   e.num_pages)
 
-    context = {
-        'packages': top_packages,
-        'packages_before': packages_before,
-        'packages_after': packages_after,
+    context_dict.update({
+        'query': query,
         'page': page,
-        'pages': pages,
-    }
-    return render(request, 'manager/explore.html', context=context)
+        'packages': results,
+        'pagination_url': reverse('manager:search_packages', kwargs={"query": query}),
+        'list_null_message': "We can't find any matching packages"
+    })
+    return render(request, 'manager/explore.html', context=context_dict)
 
 
 def package(request: HttpRequest, package_name: str):
@@ -97,10 +97,6 @@ def package(request: HttpRequest, package_name: str):
     else:
         readme = "# This package does not have a readme"
 
-    # get comments
-    comments = []
-
-    # check if user has admin priveliges
     # this could be modified in the future to allow for collaborators
     user_is_owner = is_owner(package, request.user)
 
@@ -250,13 +246,23 @@ def register_profile(request: HttpRequest):
     return render(request, 'registration/register_profile.html', {'form': form})
 
 
-def profile(request: HttpRequest, profile_name: str):
+def profile(request: HttpRequest, profile_name: str, page=1):
     user = get_object_or_404(User, username=profile_name)
     profile = get_object_or_404(UserProfile, user=user)
 
-    user_packages = getUserPackages(user)[:PAGE_SIZE]
+    page = int(page)
+    try:
+        user_packages, context_dict = paginate(getUserPackages(user), page)
+    except outOfPagesException as e:
+        return redirect('manager:profile', profile_name, e.num_pages)
 
-    context_dict = {'profile': profile, 'user_packages': user_packages}
+    context_dict.update({
+        'profile': profile,
+        'packages': user_packages,
+        'pagination_url':  reverse('manager:profile', kwargs={"profile_name": profile_name}),
+        'page': page,
+        'list_null_message': "You havent added any packages yet"
+    })
     return render(request, 'manager/profile.html', context=context_dict)
 
 

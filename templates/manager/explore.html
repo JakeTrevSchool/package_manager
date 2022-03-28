@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% extends 'manager/base.html' %} {% load staticfiles %}
+{% extends 'manager/base.html' %} {% load staticfiles %} {% load package_list %}
 
 <!--  -->
 {% block header_block %}
@@ -13,111 +13,34 @@
   type="text/css"
   href="{% static 'styles/package_list.css' %}"
 />
+<script>
+  let search_url = "{% url 'manager:search_packages' %}"
+</script>
+<script src="{% static 'scripts/search.js' %}"></script>
+<!-- external dependecies: -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 {% endblock %}
+
 <!--  -->
+
 {% block body_block %}
-<div class="segment" id="user_packages">
-  <div class="title">
-    <h2>My packages</h2>
-    <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
-  </div>
-  {% if user.is_authenticated %} {% if user_packages%}
-  <!-- this should be extracted to a component -->
-  <ul class="package_list">
-    {% for package in user_packages %}
-    <li class="package">
-      <a
-        href="{% url 'manager:package' package.package_name %}"
-        class="package_link"
-      >
-        <h2>{{ package.package_name }}</h2>
-
-        <p>description</p>
-        <!-- what is this meant to be? -->
-
-        <div class="details">
-          <div class="detail">by {{ package.author }}</div>
-
-          <div class="detail">version {{ package.current_version }}</div>
-        </div>
-        <div class="details">
-          <div class="detail">{{ package.downloads }} downloads</div>
-
-          <div class="detail">{{ package.views }} views</div>
-        </div>
-      </a>
-    </li>
-    {% endfor %}
-  </ul>
-  {% else %}
-  <h3>you havent uploaded any packages yet</h3>
-  {% endif %} {% else %}
-  <strong>You need to log in to see your own package.</strong>
-  {% endif %}
+<div class="title">
+  <h2>Explore Packages</h2>
+  <a href="{% url 'manager:add_package' %}" class="button">Add a package</a>
+</div>
+<div class="searchbar">
+  <h2>
+    <input
+    id="searchbar"
+    type="text"
+    name="qry"
+    placeholder="Search packages"
+    value="{{ query }}"
+    />
+    <button class="button" onclick="search_packages(search_url)">Go!</button>
+  </h2>
 </div>
 
-<!-- i replaced the top package and change for search package -->
-<div class="segment" id="top_5packages">
-  <div class="title">
-    <h2>Search Packages</h2>
-  </div>
-
-  <br/>
-        <!-- the action url below might need to fix -->
-  <form action="{% url 'manager:search_packages' %}" method="GET" value="{{request.GET.q}}">
-  Search <input type="text" name="q" value="{{request.GET.q}}" placeholder="Search packages"/>
-  <input type="submit" name="submit" value="Search"/>
-  </form>
-
-  <ul class="package_list">
-    {% if results %}
-    {% for result in results %}
-    <li class="package">
-      <a
-        href="{% url 'manager:package' result.package_name %}"
-        class="package_link"
-      >
-        <h2>{{ result.package_name }}</h2>
-
-        <p>description</p>
-        <!-- what is this meant to be? -->
-
-        <div class="details">
-          <div class="detail">by {{ result.author }}</div>
-
-          <div class="detail">version {{ result.current_version }}</div>
-        </div>
-        <div class="details">
-          <div class="detail">{{ result.downloads }} downloads</div>
-
-          <div class="detail">{{ result.views }} views</div>
-        </div>
-      </a>
-    </li>
-    {% endfor %}
-    {% endif %}
-  </ul>
-  <!-- page controls -->
-  <div class="page_controls">
-    {% if packages_before %}
-    <a href="{% url 'manager:explore' page|add:'-1' %}">Previous</a>
-    {% else %}
-    <span class="previous_page disabled">Previous</span>
-    {% endif %}
-    <!--  -->
-    {% for page_link in pages %} {% if page_link != page %}
-    <a href="{% url 'manager:explore' page_link %}">{{ page_link }}</a>
-    {% else %}
-    <strong>{{ page_link }}</strong>
-    {% endif %} {% endfor %}
-
-    <!--  -->
-    {% if packages_after %}
-    <a href="{% url 'manager:explore' page|add:'1' %}">Next</a>
-    {% else %}
-    <span class="next_page disabled">Next</span>
-    {% endif %}
-  </div>
-</div>
-
+{% list_packages %}
+<!--  -->
 {% endblock %}
