@@ -24,6 +24,7 @@ function load_version(select, base_url) {
         code_div.html(code_block);
     })
         .then(() => {
+        // @ts-ignore
         hljs.highlightAll();
     });
 }

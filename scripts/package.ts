@@ -21,18 +21,19 @@ function load_version(select: HTMLSelectElement, base_url: string) {
       if (data.status === "OK") {
         code_block = "<pre><code>" + data.content + "</pre></code>";
         download_button.attr("href", data.download_url);
-        download_button.click(update_downloads)
+        download_button.click(update_downloads);
       } else {
         // this block should never run
         // but im not taking any chances
         code_block = data.content;
         download_button.removeAttr("href");
-        download_button.prop("onclick", null)
+        download_button.prop("onclick", null);
       }
 
       code_div.html(code_block);
     })
     .then(() => {
+      // @ts-ignore
       hljs.highlightAll();
     });
 }

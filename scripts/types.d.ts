@@ -1,3 +1,1 @@
-declare const hljs
-declare const $
-declare const update_downloads
+declare const update_downloads;

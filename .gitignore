@@ -1,6 +1,11 @@
 media
 *.DS_Store
 .vscode
+
+# node modules
+node_modules
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
