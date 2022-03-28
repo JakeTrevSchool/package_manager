@@ -65,7 +65,7 @@ def populate():
 
 ##packages  
     add_package(
-        author = UserProfiles.objects.filter(username='theSimonDragon').first(),
+        author = UserProfile.objects.filter(username='theSimonDragon').first(),
         tags = 'test',
         package_name = 'TestProject',
         current_version = '1.0',
@@ -74,7 +74,7 @@ def populate():
         public = False)
 
     add_package(
-        author = UserProfiles.objects.filter(username='gamer6').first(),
+        author = UserProfile.objects.filter(username='gamer6').first(),
         tags = 'minecraft, dependancy, game, mod',
         package_name = 'tekkit_mekdependancy_121c',
         current_version = '12.1C',
@@ -83,7 +83,7 @@ def populate():
         public = True)
 
     add_package(
-        author = UserProfiles.objects.filter(username='Arctic_Official').first(),
+        author = UserProfile.objects.filter(username='Arctic_Official').first(),
         tags = 'bugfix, patch, vegas, extension',
         package_name = 'vegas_extension_patch_v6',
         current_version = '6a',
