@@ -14,10 +14,10 @@ class UserProfile(models.Model):
 
 
 class Package(models.Model):
-    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    tags = models.TextField(blank=True)
-
     package_name = models.CharField(max_length=120, unique=True)
+    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+
+    tags = models.TextField(blank=True)
     current_version = models.CharField(max_length=20, default="0.0.0")
 
     def getUploadDir(instance, filename):
@@ -48,7 +48,7 @@ class Version(models.Model):
     def __str__(self) -> str:
         return self.package + ":" + self.version_ID
 
-
+# this was never used, but you can see the intention here
 class Comment(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
