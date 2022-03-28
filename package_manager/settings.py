@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'h@y%omea5r1jrjim0(o^bz@+(cbcmcu)g6)j4h01i^xpe2u-^h'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'jaketrevor.pythonanywhere.com']
 
 MANAGER_PAGE_SIZE = 5
 
